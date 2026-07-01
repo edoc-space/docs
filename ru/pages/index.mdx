@@ -1,0 +1,47 @@
+---
+title: E-Doc
+description: Self-hosted documentation hosting на Markdown, MDX и React-компонентах.
+layout: home
+nav_label: Главная
+nav_position: 1
+---
+
+import {
+  Feature,
+  Grid,
+  Hero,
+  Section,
+} from '@/Components/Mdx'
+
+<Hero
+  className="home-hero"
+  title="E-Doc"
+  eyebrow="Self-hosted documentation hosting"
+  subtitle="Сайт документации, который живет в вашем репозитории: Markdown для обычных страниц, MDX для интерактивных блоков и React для расширения без тяжелой CMS."
+  href="/ru/docs"
+  label="Начать"
+>
+  Контент хранится в файлах, собирается приложением и остается под вашим git workflow. Никакой базы данных для публичной документации, лишней админки и отдельного процесса публикации.
+</Hero>
+
+<Section className="home-section" title="Для чего">
+  E-Doc нужен проектам, где документация должна быть простой в хранении, удобной для разработчиков и достаточно гибкой для живых страниц.
+</Section>
+
+<Grid className="home-benefits" columns={3}>
+  <Feature title="Простая файловая модель" icon="01">
+    Обычные `.md` и `.mdx` файлы лежат рядом с проектом. Их можно ревьюить, версионировать и обновлять тем же способом, что код.
+  </Feature>
+
+  <Feature title="MDX для живого контента" icon="02">
+    Там, где Markdown уже тесен, страница может импортировать компоненты: OpenAPI, changelog, табы, слайдеры или собственные блоки проекта.
+  </Feature>
+
+  <Feature title="React как точка расширения" icon="03">
+    Плагины пишутся как React-компоненты и подключаются как npm-пакеты. Core остается небольшим, а проект может расти без переписывания темы.
+  </Feature>
+</Grid>
+
+<Section className="home-section" title="Почему не CMS">
+  В документации к проекту важнее предсказуемость, чем универсальность. E-Doc не пытается заменить редактор, базу данных или полноценный сайт-билдер. Он дает понятный способ опубликовать документацию из файлов и добавить React там, где обычного Markdown недостаточно.
+</Section>

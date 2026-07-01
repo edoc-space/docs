@@ -1,0 +1,23 @@
+{
+  "title": "E-Doc",
+  "description": "Современная платформа для документации.",
+  "navigation": [
+    { "source": "pages" },
+    { "label": "Документация", "href": "/docs" }
+  ],
+  "footer": {
+    "enabled": true,
+    "description": "Современная платформа для документации.",
+    "copyright": "© 2026 E-Doc. Документация как код.",
+    "columns": [
+      {
+        "title": "Сайт",
+        "source": "pages"
+      },
+      {
+        "title": "Документация",
+        "source": "docs"
+      }
+    ]
+  }
+}

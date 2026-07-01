@@ -1,0 +1,82 @@
+---
+title: Версии документации
+description: Как публиковать текущую документацию, поддерживаемые прошлые версии и архивные релизы.
+sidebar_label: Версии
+sidebar_position: 6
+---
+
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+# Версии документации
+
+E-Doc хранит последнюю документацию в обычном дереве `docs`. Прошлые версии описываются в `versions.json` и могут переопределять только те файлы, которые действительно изменились.
+
+Текущая версия всегда открывается по `/docs` или `/ru/docs` для русской локали. Поддерживаемые прошлые версии открываются по `/docs/v/{version}` или `/ru/docs/v/{version}`. Архивные версии остаются видимыми на странице "Все версии", но дерево документации и поиск для них отключены.
+
+## Структура файлов
+
+<DirectoryTree
+  title="Файлы версионированной документации"
+  tree={[
+    {
+      name: 'local/storage/edoc/ru/docs',
+      type: 'directory',
+      children: [
+        { name: 'versions.json', type: 'file', description: 'список версий и их статусы' },
+        { name: 'content', type: 'directory', description: 'текущая документация' },
+        { name: 'start', type: 'directory', description: 'текущая документация' },
+        {
+          name: 'versioned_docs',
+          type: 'directory',
+          description: 'переопределения для поддерживаемых прошлых версий',
+          children: [
+            {
+              name: '1.1.0',
+              type: 'directory',
+              children: [
+                {
+                  name: 'overrides',
+                  type: 'directory',
+                  children: [
+                    { name: 'content/content-model.mdx', type: 'file', description: 'заменяет текущий документ только для 1.1.0' },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+## versions.json
+
+```json
+{
+  "current": "0.1.0",
+  "versions": [
+    { "version": "0.1.0", "label": "0.1.0", "status": "current" },
+    { "version": "0.0.0", "label": "0.0.0", "status": "archived" }
+  ]
+}
+```
+
+Статусы:
+
+- `current` - последняя документация, доступна по `/docs` или `/ru/docs`.
+- `supported` - прошлая поддерживаемая версия, доступна по `/docs/v/{version}` или `/ru/docs/v/{version}`.
+- `archived` - отображается только как история; документация и поиск отключены.
+
+## since и until
+
+Документ или раздел может указать версионное окно во front matter:
+
+```md
+---
+title: Новая возможность
+since: 1.2.0
+---
+```
+
+С `since: 1.2.0` страница не будет отображаться в `1.1.0` и более старых версиях. `until` работает наоборот и скрывает контент после указанной версии.

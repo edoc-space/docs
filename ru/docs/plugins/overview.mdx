@@ -1,0 +1,242 @@
+---
+title: Плагины
+description: Чем отличаются внешние npm-плагины и внутренние core-компоненты E-Doc.
+sidebar_label: Обзор
+sidebar_position: 1
+---
+
+import { Card, Grid, Section, Steps } from '@/Components/Mdx'
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+# Плагины
+
+Плагины нужны для контента, который неудобно поддерживать обычным Markdown: OpenAPI reference, changelog, дерево каталогов, слайдеры, карточки, табы, интерактивные блоки и проектные виджеты.
+
+В E-Doc есть два уровня расширения:
+
+<Grid columns={2}>
+  <Card title="Внутренние core-компоненты" label="Markdown и MDX" href="/ru/docs/content/markdown-and-mdx">
+    Поставляются вместе с E-Doc. Их можно импортировать из `@/Components/Mdx` и использовать без установки npm-пакета.
+  </Card>
+
+  <Card title="Внешние npm-плагины" label="Примеры" href="/ru/plugins">
+    Подключаются в пользовательский слой `local/plugins` и развиваются отдельно от core-кода E-Doc.
+  </Card>
+</Grid>
+
+Простое правило: если компонент входит в E-Doc, используйте core-компонент. Если нужен отдельный пакет или проектный виджет, подключайте внешний npm-плагин.
+
+## Внешние плагины
+
+Внешний плагин - это npm-пакет с React-компонентом. Его устанавливают в `local/plugins`, а затем импортируют в `.mdx` странице.
+
+Такой слой нужен, чтобы пользовательские зависимости не попадали в core `package.json`. Core `package.json` относится к движку E-Doc, и при обновлении системы локальные изменения в нем будут мешать.
+
+<DirectoryTree
+  title="Пользовательский слой плагинов"
+  description="Зависимости внешних плагинов живут рядом с контентом и не конфликтуют с обновлением движка."
+  tree={[
+    {
+      name: 'local/plugins',
+      type: 'directory',
+      children: [
+        { name: 'node_modules', type: 'directory', description: 'установленные npm-пакеты' },
+        { name: 'package.json', type: 'file', description: 'зависимости пользовательских плагинов' },
+        { name: 'yarn.lock', type: 'file', description: 'зафиксированные версии пакетов' },
+      ],
+    },
+  ]}
+/>
+
+## Установка внешнего плагина
+
+Перейдите в каталог плагинов:
+
+```bash
+cd local/plugins
+```
+
+Установите пакет:
+
+```bash
+yarn add @edoc-space/plugin-openapi
+```
+
+или через npm:
+
+```bash
+npm install @edoc-space/plugin-openapi
+```
+
+После установки перезапустите Vite dev server, если он уже был запущен.
+
+## Использование внешнего плагина в MDX
+
+Создайте или откройте `.mdx` страницу:
+
+```text
+local/storage/edoc/ru/pages/api.mdx
+```
+
+Импортируйте компонент и используйте его в разметке:
+
+```mdx
+---
+title: API
+slug: api
+nav_label: API
+nav_position: 30
+---
+
+import { OpenApi } from '@edoc-space/plugin-openapi'
+
+# API
+
+<OpenApi source="/storage/edoc/static/openapi.json" />
+```
+
+Файл `openapi.json` можно положить в `local/storage/edoc/static/openapi.json`.
+
+## Внешние плагины в базовой поставке
+
+В базовой поставке готовятся три внешних пакета:
+
+- [OpenAPI plugin](/ru/docs/plugins/openapi) - вывод OpenAPI-спецификации;
+- [Changelog plugin](/ru/docs/plugins/changelog) - история изменений из Markdown или JSON;
+- [DirectoryTree plugin](/ru/docs/plugins/directory-tree) - дерево каталогов из inline-структуры или JSON.
+
+Публичные страницы с примерами доступны в верхнем меню сайта в разделе [Плагины](/ru/plugins).
+
+## Внутренние core-компоненты
+
+Core-компоненты входят прямо в E-Doc и не требуют установки npm-пакета. Они нужны для типовых блоков, которые часто встречаются в документации и на страницах сайта.
+
+Импорт выглядит так:
+
+```mdx
+import { Grid, Card, Section } from '@/Components/Mdx'
+```
+
+Такие компоненты можно использовать в любой `.mdx` странице из `pages` или `docs`.
+
+<Section title="Что уже есть в core">
+  Внутренние компоненты закрывают базовую верстку страницы: первый экран, секции, сетки, карточки, шаги и простые визуальные блоки.
+</Section>
+
+<Grid columns={3}>
+  <Card title="Hero">
+    Первый экран страницы с заголовком, описанием и кнопками. Обычно используется на главной странице.
+  </Card>
+
+  <Card title="Section">
+    Смысловой блок страницы. Удобен, когда нужно отделить одну тему от другой.
+  </Card>
+
+  <Card title="Grid / Columns">
+    Сетки для карточек, преимуществ, списков возможностей и коротких сравнений.
+  </Card>
+
+  <Card title="Card / Feature">
+    Небольшие карточки с заголовком, текстом и ссылкой на следующий шаг.
+  </Card>
+
+  <Card title="Slider / Tabs / Testimonial">
+    Простые визуальные блоки для страниц сайта и будущих лендингов.
+  </Card>
+</Grid>
+
+## DirectoryTree plugin
+
+`DirectoryTree` вынесен во внешний пакет, потому что это контентный компонент с отдельной задачей и собственной зависимостью на иконки. Установите его в пользовательский слой:
+
+```bash
+cd local/plugins
+yarn add @edoc-space/plugin-directory-tree
+```
+
+После этого дерево можно собрать прямо в MDX:
+
+```mdx
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+<DirectoryTree
+  title="Структура контента"
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'docs', type: 'directory' },
+        { name: 'pages', type: 'directory' },
+        { name: 'static', type: 'directory' },
+        { name: 'site.json', type: 'file' },
+      ],
+    },
+  ]}
+/>
+```
+
+Или загрузить из JSON-файла:
+
+```mdx
+<DirectoryTree source="/storage/edoc/static/examples/edoc-content-tree.json" />
+```
+
+Живой пример:
+
+<DirectoryTree source="/storage/edoc/static/examples/edoc-content-tree.json" />
+
+## Steps
+
+`Steps` помогает оформить последовательность действий:
+
+<Steps title="Как выбрать тип расширения">
+  <ol>
+    <li>Оставьте страницу в Markdown, если хватает текста, списков, ссылок и code blocks.</li>
+    <li>Перейдите на MDX, если нужен core-компонент E-Doc.</li>
+    <li>Подключите внешний npm-плагин, если компонент должен жить отдельно от core.</li>
+  </ol>
+</Steps>
+
+## Когда писать свой плагин
+
+Свой внешний плагин имеет смысл, если:
+
+- компонент нужен в нескольких проектах;
+- у него есть собственные зависимости;
+- он должен публиковаться как `@edoc-space/*` пакет;
+- его развитие не должно зависеть от релизов core E-Doc.
+
+Если компонент нужен только одной странице и не имеет внешних зависимостей, сначала попробуйте core-компоненты или обычный MDX.
+
+## Частые ошибки
+
+### Пакет установлен не туда
+
+Если пакет добавили в core `package.json`, перенесите его в `local/plugins`:
+
+```bash
+cd local/plugins
+yarn add @edoc-space/plugin-openapi
+```
+
+### Import не найден
+
+Проверьте:
+
+- пакет установлен в `local/plugins`;
+- имя package совпадает с импортом;
+- Vite dev server перезапущен после установки;
+- в `local/plugins/package.json` зависимость находится в `dependencies`, а не только в `devDependencies`.
+
+### Компонент есть, но данные не загрузились
+
+Проверьте путь к файлу. Для пользовательских файлов обычно используется публичный префикс:
+
+```text
+/storage/edoc/static/...
+```
+
+## Следующий шаг
+
+Посмотрите конкретные внешние плагины: [OpenAPI plugin](/ru/docs/plugins/openapi), [Changelog plugin](/ru/docs/plugins/changelog) и [DirectoryTree plugin](/ru/docs/plugins/directory-tree). Если нужен свой компонент, начните с core-компонентов и переходите к внешнему плагину только когда появится повторяемая задача.

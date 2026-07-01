@@ -1,0 +1,73 @@
+{
+  "title": "User content structure",
+  "description": "A minimal structure usually changed by an E-Doc user.",
+  "items": [
+    {
+      "name": "site.json",
+      "type": "file",
+      "description": "global locale, brand, and base site settings"
+    },
+    {
+      "name": "static",
+      "type": "directory",
+      "description": "shared assets, OpenAPI files, changelog files, and examples",
+      "children": [
+        { "name": "examples/openapi.json", "type": "file" },
+        { "name": "examples/changelog.md", "type": "file" }
+      ]
+    },
+    {
+      "name": "en",
+      "type": "directory",
+      "description": "English content",
+      "children": [
+        {
+          "name": "pages",
+          "type": "directory",
+          "children": [
+            { "name": "index.mdx", "type": "file", "description": "home page" },
+            { "name": "plugins.mdx", "type": "file", "description": "standalone site page" }
+          ]
+        },
+        {
+          "name": "docs",
+          "type": "directory",
+          "children": [
+            {
+              "name": "start",
+              "type": "directory",
+              "children": [
+                { "name": "index.json", "type": "file" },
+                { "name": "introduction.md", "type": "file" },
+                { "name": "quick-start.mdx", "type": "file" }
+              ]
+            },
+            {
+              "name": "content",
+              "type": "directory",
+              "children": [
+                { "name": "index.json", "type": "file" },
+                { "name": "content-model.mdx", "type": "file" }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "site.json",
+          "type": "file",
+          "description": "localized navigation and footer"
+        }
+      ]
+    },
+    {
+      "name": "ru",
+      "type": "directory",
+      "description": "Russian content",
+      "children": [
+        { "name": "pages", "type": "directory" },
+        { "name": "docs", "type": "directory" },
+        { "name": "site.json", "type": "file" }
+      ]
+    }
+  ]
+}

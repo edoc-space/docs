@@ -1,0 +1,7 @@
+{
+  "label": "Контент",
+  "description": "Файловая модель, страницы сайта и дерево проектной документации.",
+  "position": 2,
+  "collapsed": false,
+  "link": { "type": "generated-index" }
+}

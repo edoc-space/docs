@@ -1,0 +1,57 @@
+---
+title: DirectoryTree plugin
+description: Установка и использование @edoc-space/plugin-directory-tree.
+slug: plugins/directory-tree
+layout: page
+---
+
+import { Hero, Section } from '@/Components/Mdx'
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+<Hero
+  title="DirectoryTree"
+  eyebrow="@edoc-space/plugin-directory-tree"
+  subtitle="React-компонент для вывода структуры каталогов внутри MDX-страницы."
+>
+  Подходит для объяснения файловой модели проекта, структуры пользовательского контента, состава npm-пакета или любого дерева файлов.
+</Hero>
+
+<Section title="Установка">
+  Пакет планируется публиковать в npm под организацией `@edoc-space`.
+
+```shell
+cd local/plugins
+yarn add @edoc-space/plugin-directory-tree
+```
+
+```shell
+cd local/plugins
+npm install @edoc-space/plugin-directory-tree
+```
+
+Пакет на npm: [@edoc-space/plugin-directory-tree](https://www.npmjs.com/package/@edoc-space/plugin-directory-tree)
+</Section>
+
+<Section title="Подключение">
+Пример MDX-страницы:
+
+```mdx
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+<DirectoryTree
+  title="Структура контента"
+  source="/storage/edoc/static/examples/edoc-content-tree.json"
+/>
+```
+
+Можно передавать структуру прямо в MDX через `tree`, либо загрузить JSON через `source`.
+</Section>
+
+<Section title="Пример">
+  Ниже компонент использует демонстрационную структуру из `static`.
+</Section>
+
+<DirectoryTree
+  title="Структура E-Doc"
+  source="/storage/edoc/static/examples/edoc-content-tree.json"
+/>

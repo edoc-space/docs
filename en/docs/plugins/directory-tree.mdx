@@ -1,0 +1,104 @@
+---
+title: DirectoryTree plugin
+description: How to connect @edoc-space/plugin-directory-tree and render a directory structure on an MDX page.
+sidebar_label: DirectoryTree plugin
+sidebar_position: 4
+---
+
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+# DirectoryTree plugin
+
+`@edoc-space/plugin-directory-tree` renders file and directory structures. Use it when you need to explain where content lives, how an npm package is organized, or which files a user should create.
+
+The plugin is external because a directory tree is a focused content block with its own icon dependency.
+
+## Installation
+
+Install the package in the user plugin layer:
+
+```bash
+cd local/plugins
+yarn add @edoc-space/plugin-directory-tree
+```
+
+or with npm:
+
+```bash
+cd local/plugins
+npm install @edoc-space/plugin-directory-tree
+```
+
+Package on npm: [@edoc-space/plugin-directory-tree](https://www.npmjs.com/package/@edoc-space/plugin-directory-tree)
+
+## Inline structure
+
+For small trees, define the structure directly in MDX:
+
+```mdx
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+<DirectoryTree
+  title="Content structure"
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'en', type: 'directory' },
+        { name: 'ru', type: 'directory' },
+        { name: 'static', type: 'directory' },
+        { name: 'site.json', type: 'file' },
+      ],
+    },
+  ]}
+/>
+```
+
+Live example:
+
+<DirectoryTree
+  title="Content structure"
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'en', type: 'directory' },
+        { name: 'ru', type: 'directory' },
+        { name: 'static', type: 'directory' },
+        { name: 'site.json', type: 'file' },
+      ],
+    },
+  ]}
+/>
+
+## JSON source
+
+If the structure is large or reused on several pages, put JSON in `static`:
+
+```text
+local/storage/edoc/static/examples/edoc-content-tree.json
+```
+
+Then load it through a public URL:
+
+```mdx
+<DirectoryTree source="/storage/edoc/static/examples/edoc-content-tree.json" />
+```
+
+Live example:
+
+<DirectoryTree source="/storage/edoc/static/examples/edoc-content-tree.json" />
+
+## Useful props
+
+- `title` - window title;
+- `description` - text above the tree;
+- `tree` - inline structure;
+- `source` - JSON file URL;
+- `defaultExpanded` - whether directories are expanded by default.
+
+## Next step
+
+Review [OpenAPI plugin](/docs/plugins/openapi) and [Changelog plugin](/docs/plugins/changelog) if you need to render data from a specification or release history file.

@@ -1,0 +1,242 @@
+---
+title: Plugins
+description: How external npm plugins differ from internal E-Doc core components.
+sidebar_label: Overview
+sidebar_position: 1
+---
+
+import { Card, Grid, Section, Steps } from '@/Components/Mdx'
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+# Plugins
+
+Plugins are useful for content that is inconvenient to maintain with plain Markdown: OpenAPI reference, changelog, directory trees, sliders, cards, tabs, interactive blocks, and project widgets.
+
+E-Doc has two extension levels:
+
+<Grid columns={2}>
+  <Card title="Internal core components" label="Markdown and MDX" href="/docs/content/markdown-and-mdx">
+    Shipped with E-Doc. Import them from `@/Components/Mdx` and use them without installing an npm package.
+  </Card>
+
+  <Card title="External npm plugins" label="Examples" href="/plugins">
+    Installed in the user layer `local/plugins` and developed separately from E-Doc core code.
+  </Card>
+</Grid>
+
+Simple rule: if the component is part of E-Doc, use a core component. If you need a separate package or a project widget, install an external npm plugin.
+
+## External plugins
+
+An external plugin is an npm package with a React component. Install it in `local/plugins`, then import it from an `.mdx` page.
+
+This layer keeps user dependencies out of the core `package.json`. The core `package.json` belongs to the E-Doc engine, and local changes there can conflict with system updates.
+
+<DirectoryTree
+  title="User plugin layer"
+  description="External plugin dependencies live next to content and do not conflict with engine updates."
+  tree={[
+    {
+      name: 'local/plugins',
+      type: 'directory',
+      children: [
+        { name: 'node_modules', type: 'directory', description: 'installed npm packages' },
+        { name: 'package.json', type: 'file', description: 'user plugin dependencies' },
+        { name: 'yarn.lock', type: 'file', description: 'locked package versions' },
+      ],
+    },
+  ]}
+/>
+
+## Install an external plugin
+
+Go to the plugin directory:
+
+```bash
+cd local/plugins
+```
+
+Install a package:
+
+```bash
+yarn add @edoc-space/plugin-openapi
+```
+
+or with npm:
+
+```bash
+npm install @edoc-space/plugin-openapi
+```
+
+Restart the Vite dev server if it was already running.
+
+## Use an external plugin in MDX
+
+Create or open an `.mdx` page:
+
+```text
+local/storage/edoc/en/pages/api.mdx
+```
+
+Import the component and use it in markup:
+
+```mdx
+---
+title: API
+slug: api
+nav_label: API
+nav_position: 30
+---
+
+import { OpenApi } from '@edoc-space/plugin-openapi'
+
+# API
+
+<OpenApi source="/storage/edoc/static/openapi.json" />
+```
+
+Place `openapi.json` in `local/storage/edoc/static/openapi.json`.
+
+## External plugins in the base set
+
+The base set contains three external packages:
+
+- [OpenAPI plugin](/docs/plugins/openapi) - OpenAPI specification rendering;
+- [Changelog plugin](/docs/plugins/changelog) - release history from Markdown or JSON;
+- [DirectoryTree plugin](/docs/plugins/directory-tree) - directory tree from inline data or JSON.
+
+Public example pages are available in the top menu under [Plugins](/plugins).
+
+## Internal core components
+
+Core components are shipped with E-Doc and do not require npm installation. They cover common blocks that appear in documentation and site pages.
+
+Import them like this:
+
+```mdx
+import { Grid, Card, Section } from '@/Components/Mdx'
+```
+
+These components can be used in any `.mdx` page from `pages` or `docs`.
+
+<Section title="What core already includes">
+  Internal components cover basic page composition: hero blocks, sections, grids, cards, steps, and simple visual blocks.
+</Section>
+
+<Grid columns={3}>
+  <Card title="Hero">
+    The first screen of a page with title, description, and actions. Usually used on the home page.
+  </Card>
+
+  <Card title="Section">
+    A semantic page block. Useful when one topic should be separated from another.
+  </Card>
+
+  <Card title="Grid / Columns">
+    Layout grids for cards, benefits, feature lists, and short comparisons.
+  </Card>
+
+  <Card title="Card / Feature">
+    Small cards with a title, text, and optional link to the next step.
+  </Card>
+
+  <Card title="Slider / Tabs / Testimonial">
+    Simple visual blocks for site pages and future landing pages.
+  </Card>
+</Grid>
+
+## DirectoryTree plugin
+
+`DirectoryTree` is an external package because it is a content component with a focused task and its own icon dependency. Install it in the user layer:
+
+```bash
+cd local/plugins
+yarn add @edoc-space/plugin-directory-tree
+```
+
+Then build a tree directly in MDX:
+
+```mdx
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+<DirectoryTree
+  title="Content structure"
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'en', type: 'directory' },
+        { name: 'ru', type: 'directory' },
+        { name: 'static', type: 'directory' },
+        { name: 'site.json', type: 'file' },
+      ],
+    },
+  ]}
+/>
+```
+
+Or load it from a JSON file:
+
+```mdx
+<DirectoryTree source="/storage/edoc/static/examples/edoc-content-tree.json" />
+```
+
+Live example:
+
+<DirectoryTree source="/storage/edoc/static/examples/edoc-content-tree.json" />
+
+## Steps
+
+`Steps` helps format a sequence of actions:
+
+<Steps title="How to choose an extension type">
+  <ol>
+    <li>Keep the page in Markdown if text, lists, links, and code blocks are enough.</li>
+    <li>Move to MDX if you need an E-Doc core component.</li>
+    <li>Install an external npm plugin if the component should live separately from core.</li>
+  </ol>
+</Steps>
+
+## When to write your own plugin
+
+A custom external plugin makes sense when:
+
+- the component is needed in several projects;
+- it has its own dependencies;
+- it should be published as an `@edoc-space/*` package;
+- its development should not depend on E-Doc core releases.
+
+If a component is only needed on one page and has no external dependencies, try core components or regular MDX first.
+
+## Common mistakes
+
+### Package installed in the wrong place
+
+If a package was added to the core `package.json`, move it to `local/plugins`:
+
+```bash
+cd local/plugins
+yarn add @edoc-space/plugin-openapi
+```
+
+### Import not found
+
+Check:
+
+- the package is installed in `local/plugins`;
+- the package name matches the import;
+- Vite dev server was restarted after installation;
+- the dependency is in `dependencies` in `local/plugins/package.json`, not only in `devDependencies`.
+
+### Component renders but data does not load
+
+Check the file path. User files usually use the public prefix:
+
+```text
+/storage/edoc/static/...
+```
+
+## Next step
+
+Review concrete external plugins: [OpenAPI plugin](/docs/plugins/openapi), [Changelog plugin](/docs/plugins/changelog), and [DirectoryTree plugin](/docs/plugins/directory-tree). If you need a custom component, start with core components and move to an external plugin only when the task becomes repeatable.

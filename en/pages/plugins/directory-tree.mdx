@@ -1,0 +1,57 @@
+---
+title: DirectoryTree plugin
+description: Installing and using @edoc-space/plugin-directory-tree.
+slug: plugins/directory-tree
+layout: page
+---
+
+import { Hero, Section } from '@/Components/Mdx'
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+<Hero
+  title="DirectoryTree"
+  eyebrow="@edoc-space/plugin-directory-tree"
+  subtitle="A React component for rendering directory structures inside an MDX page."
+>
+  Useful for explaining the project file model, user content structure, npm package layout, or any other file tree.
+</Hero>
+
+<Section title="Installation">
+  Install the package in the user plugin layer.
+
+```shell
+cd local/plugins
+yarn add @edoc-space/plugin-directory-tree
+```
+
+```shell
+cd local/plugins
+npm install @edoc-space/plugin-directory-tree
+```
+
+Package on npm: [@edoc-space/plugin-directory-tree](https://www.npmjs.com/package/@edoc-space/plugin-directory-tree)
+</Section>
+
+<Section title="Usage">
+MDX page example:
+
+```mdx
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+<DirectoryTree
+  title="Content structure"
+  source="/storage/edoc/static/examples/edoc-content-tree.json"
+/>
+```
+
+You can pass a tree inline through `tree`, or load JSON through `source`.
+</Section>
+
+<Section title="Example">
+  The component below uses the demo structure from `static`.
+</Section>
+
+<DirectoryTree
+  title="E-Doc structure"
+  source="/storage/edoc/static/examples/edoc-content-tree.json"
+/>

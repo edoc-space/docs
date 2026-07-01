@@ -1,0 +1,17 @@
+{
+  "current": "0.1.0",
+  "versions": [
+    {
+      "version": "0.1.0",
+      "label": "0.1.0",
+      "status": "current",
+      "released_at": "2026-07-01"
+    },
+    {
+      "version": "0.0.0",
+      "label": "0.0.0",
+      "status": "archived",
+      "archived_at": "2026-07-01"
+    }
+  ]
+}

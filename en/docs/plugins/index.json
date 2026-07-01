@@ -1,0 +1,7 @@
+{
+  "label": "Plugins",
+  "description": "React components for MDX pages and documentation.",
+  "position": 3,
+  "collapsed": false,
+  "link": { "type": "generated-index" }
+}

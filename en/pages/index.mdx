@@ -1,0 +1,47 @@
+---
+title: E-Doc
+description: Self-hosted documentation hosting with Markdown, MDX, and React components.
+layout: home
+nav_label: Home
+nav_position: 1
+---
+
+import {
+  Feature,
+  Grid,
+  Hero,
+  Section,
+} from '@/Components/Mdx'
+
+<Hero
+  className="home-hero"
+  title="E-Doc"
+  eyebrow="Self-hosted documentation hosting"
+  subtitle="A documentation site that lives in your repository: Markdown for regular pages, MDX for interactive blocks, and React for extension without a heavy CMS."
+  href="/docs"
+  label="Get started"
+>
+  Content stays in files, is rendered by the application, and remains under your git workflow. No public documentation database, no extra admin panel, no separate publishing process.
+</Hero>
+
+<Section className="home-section" title="What it is for">
+  E-Doc is for projects where documentation should be easy to store, comfortable for developers, and flexible enough for rich pages.
+</Section>
+
+<Grid className="home-benefits" columns={3}>
+  <Feature title="Simple file model" icon="01">
+    Regular `.md` and `.mdx` files live next to the project. You can review, version, and update them in the same way as code.
+  </Feature>
+
+  <Feature title="MDX for live content" icon="02">
+    When Markdown becomes too limited, a page can import components: OpenAPI, changelog, tabs, sliders, or project-specific blocks.
+  </Feature>
+
+  <Feature title="React as the extension point" icon="03">
+    Plugins are written as React components and installed as npm packages. Core stays small, while the project can grow without rewriting the theme.
+  </Feature>
+</Grid>
+
+<Section className="home-section" title="Why not a CMS">
+  For project documentation, predictability is often more important than universal editing. E-Doc does not try to replace an editor, database, or full site builder. It gives you a clear way to publish documentation from files and add React only where plain Markdown is not enough.
+</Section>

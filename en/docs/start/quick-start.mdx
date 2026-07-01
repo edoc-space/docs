@@ -1,0 +1,282 @@
+---
+title: Quick start
+description: How to run E-Doc locally and understand where to change the first content.
+sidebar_label: Quick start
+sidebar_position: 2
+---
+
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+# Quick start
+
+This page explains the basic E-Doc workflow: how to run the site, where content is stored, and which file to edit first.
+
+E-Doc does not need a database for public documentation. A simple setup only needs PHP for the application and Node.js for the frontend build.
+
+## What you will get
+
+By the end, you will understand:
+
+- how to run E-Doc with `phpsoftbox/workspace`;
+- what to do if you prefer a lightweight Docker setup without Workspace;
+- where the home page lives;
+- where documentation lives;
+- how to add the first page and check the result.
+
+## Recommended path: Installer and Workspace
+
+`phpsoftbox/installer` installs the `phpsoftbox` CLI command, and `phpsoftbox/workspace` provides a ready Docker setup for PHP applications: `nginx`, `php-fpm`, `php-cli`, and a Vite dev server.
+
+For E-Doc, two profiles are usually enough:
+
+```ini
+[profiles]
+default_profiles = web cli
+```
+
+The `web` profile starts the web server and PHP-FPM. The `cli` profile is used for `composer install`, `yarn install`, tests, and one-off commands.
+
+## Install Installer
+
+Installer can be installed through a shell script:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/phpsoftbox/installer/master/install.sh)"
+```
+
+or through Composer:
+
+```bash
+composer global require \
+  phpsoftbox/installer:dev-master \
+  phpsoftbox/cli-app:dev-master \
+  phpsoftbox/error-formatter:dev-master \
+  --prefer-stable
+```
+
+If the `phpsoftbox` command is not found, add Composer's global bin directory to `PATH`:
+
+```bash
+export PATH="$(composer -q global config bin-dir --absolute):$PATH"
+```
+
+Check the command:
+
+```bash
+phpsoftbox list
+```
+
+## Run E-Doc in Workspace
+
+Create a workspace directory:
+
+```bash
+phpsoftbox workspace:install edoc-workspace
+cd edoc-workspace
+phpsoftbox workspace:init
+```
+
+Put the E-Doc application into `local/backend`. Usually that means cloning the project repository:
+
+```bash
+git clone https://github.com/edoc-space/edoc.git local/backend
+```
+
+Make sure the minimal profiles are enabled in `.workspace.ini`:
+
+```bash
+phpsoftbox profiles:set web cli
+```
+
+Install dependencies and start the environment:
+
+```bash
+phpsoftbox init
+phpsoftbox up
+phpsoftbox vite-dev
+```
+
+In a standard Workspace, the site is available at:
+
+```text
+http://localhost:8080
+```
+
+The Vite dev server is available at:
+
+```text
+http://localhost:5173
+```
+
+If the project configures Traefik and local domains, the URLs can be different, for example `https://e-doc.local` and `https://vite.e-doc.local`.
+
+## If you prefer your own Docker
+
+Workspace is optional. A minimal custom environment needs:
+
+- PHP 8.4+ or PHP-FPM;
+- Composer;
+- Node.js 22+;
+- Yarn or npm;
+- a web server that serves `public/index.php`.
+
+The basic order is:
+
+```bash
+cd local/backend
+composer install
+yarn install
+cp config/env/.env.example config/env/.env
+```
+
+For a local check without Nginx, you can use PHP's built-in server:
+
+```bash
+APP_URL=http://127.0.0.1:8080 \
+VITE_DEV_SERVER=http://127.0.0.1:5173 \
+php -S 127.0.0.1:8080 -t public public/index.php
+```
+
+Start Vite in another terminal:
+
+```bash
+yarn dev --host 127.0.0.1 --port 5173
+```
+
+This path is useful if you already maintain your own Docker setup and do not want to use Workspace.
+
+## Where content lives
+
+User content lives under `local/storage/edoc`. Languages are first-level content folders, even when the site only has one language.
+
+<DirectoryTree
+  title="User content"
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'site.json', type: 'file', description: 'global locales, brand, and base site settings' },
+        {
+          name: 'static',
+          type: 'directory',
+          description: 'shared images, OpenAPI files, changelog, and other assets',
+        },
+        {
+          name: 'en',
+          type: 'directory',
+          description: 'English content',
+          children: [
+            { name: 'pages', type: 'directory', description: 'standalone site pages' },
+            { name: 'docs', type: 'directory', description: 'documentation under /docs' },
+            { name: 'site.json', type: 'file', description: 'localized navigation and footer text' },
+          ],
+        },
+        {
+          name: 'ru',
+          type: 'directory',
+          description: 'Russian content',
+          children: [
+            { name: 'pages', type: 'directory' },
+            { name: 'docs', type: 'directory' },
+            { name: 'site.json', type: 'file' },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+The purpose is simple:
+
+- `en/pages` and `ru/pages` are standalone site pages;
+- `en/docs` and `ru/docs` are documentation trees;
+- `static` stores shared images, OpenAPI files, changelogs, and other files;
+- `site.json` configures languages, brand, navigation, and footer.
+
+This folder belongs to the user layer. It should not conflict with E-Doc engine updates.
+
+## Change the home page
+
+The default English home page lives here:
+
+```text
+local/storage/edoc/en/pages/index.mdx
+```
+
+Open the file, change text in `Hero` or one of the blocks, and refresh the home page.
+
+If the Vite dev server is running, the change should appear without a separate build.
+
+## Add a document
+
+Documentation lives in:
+
+```text
+local/storage/edoc/en/docs
+```
+
+A minimal document looks like this:
+
+```markdown
+---
+title: Installation
+description: How to install the project locally.
+sidebar_position: 10
+---
+
+# Installation
+
+Describe the installation steps here.
+```
+
+If you save it as:
+
+```text
+local/storage/edoc/en/docs/installation.md
+```
+
+the page opens at:
+
+```text
+/docs/installation
+```
+
+## Add a page to the top menu
+
+For a standalone site page, create a file in `pages`:
+
+```text
+local/storage/edoc/en/pages/about.md
+```
+
+Example:
+
+```markdown
+---
+title: About
+slug: about
+nav_label: About
+nav_position: 10
+---
+
+# About
+
+Briefly explain who the site is for and what readers can find here.
+```
+
+After refresh, the `About` item appears in the top menu.
+
+## Check the result
+
+Check three URLs:
+
+- `/` - the home page;
+- `/docs` - the main documentation;
+- `/about` - the standalone page, if you created the example above.
+
+If a page does not appear, check front matter first. The most common issues are `slug`, `nav_label`, or YAML indentation.
+
+## Next step
+
+Next, review the file model: [How content is organized](/docs/content/content-model).

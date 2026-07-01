@@ -1,0 +1,23 @@
+{
+  "title": "E-Doc",
+  "description": "Modern documentation platform.",
+  "navigation": [
+    { "source": "pages" },
+    { "label": "Docs", "href": "/docs" }
+  ],
+  "footer": {
+    "enabled": true,
+    "description": "Modern documentation platform.",
+    "copyright": "© 2026 E-Doc. Documentation as code.",
+    "columns": [
+      {
+        "title": "Site",
+        "source": "pages"
+      },
+      {
+        "title": "Documentation",
+        "source": "docs"
+      }
+    ]
+  }
+}

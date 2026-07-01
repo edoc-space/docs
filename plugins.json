@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@edoc-space/plugin-changelog": "^1.0.0",
+    "@edoc-space/plugin-directory-tree": "^1.0.0",
+    "@edoc-space/plugin-openapi": "^1.0.0"
+  }
+}

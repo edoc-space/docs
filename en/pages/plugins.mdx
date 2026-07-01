@@ -1,0 +1,64 @@
+---
+title: Plugins
+description: React components for extending E-Doc MDX pages.
+slug: plugins
+layout: page
+nav_label: Plugins
+nav_position: 2
+---
+
+import { Card, Columns, Hero, Section } from '@/Components/Mdx'
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+<Hero
+  title="Plugins"
+  eyebrow="MDX components"
+  subtitle="Ready-to-use React components for pages and documentation. Install them as regular npm packages and use them inside MDX."
+>
+  Base plugins cover common tasks: API reference, changelog, interactive blocks, and visual components that are inconvenient to maintain by hand in Markdown.
+</Hero>
+
+<Section title="Base package set">
+  E-Doc plugins are published under the `@edoc-space` npm organization. They are developed separately from the core application, but the user workflow should feel like any other frontend package.
+</Section>
+
+<Columns columns={3}>
+  <Card title="OpenAPI" href="/plugins/openapi" label="Documentation">
+    A component for rendering OpenAPI specifications: endpoints, tags, parameters, request bodies, responses, and compact schema previews.
+  </Card>
+
+  <Card title="Changelog" href="/plugins/changelog" label="Documentation">
+    A component for release history from Markdown or JSON: releases, change categories, and optional links to tasks.
+  </Card>
+
+  <Card title="DirectoryTree" href="/plugins/directory-tree" label="Documentation">
+    A component for directory structures from JSON or inline trees: folders, files, descriptions, and collapsed branches.
+  </Card>
+</Columns>
+
+<Section title="How plugins are used">
+  Install a plugin in the project with a package manager, import it in an `.mdx` page, and then use it like a regular React component.
+</Section>
+
+<DirectoryTree
+  title="npm package structure"
+  description="A minimal plugin package that is published under @edoc-space and imported from MDX."
+  tree={[
+    {
+      name: '@edoc-space/plugin-openapi',
+      type: 'directory',
+      children: [
+        {
+          name: 'src',
+          type: 'directory',
+          children: [
+            { name: 'index.tsx', type: 'file', description: 'React component export' },
+            { name: 'styles.css', type: 'file', description: 'plugin styles' },
+          ],
+        },
+        { name: 'package.json', type: 'file', description: 'name, exports, peer dependencies' },
+        { name: 'README.md', type: 'file', description: 'installation and examples' },
+      ],
+    },
+  ]}
+/>

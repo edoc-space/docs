@@ -1,0 +1,196 @@
+---
+title: Languages and localization
+description: How E-Doc stores multilingual content and builds links between translations.
+sidebar_label: Languages
+sidebar_position: 5
+---
+
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+# Languages and localization
+
+E-Doc can publish one site for several audiences: for example, English documentation at the root and a Russian version under `/ru`.
+
+Localization follows the documentation as code model: each language has its own files, and E-Doc builds URLs, navigation, canonical links, and `hreflang` from `site.json` and front matter.
+
+## Basic idea
+
+Each language stores its own `pages` and `docs` inside the language directory. This is true even for the default locale: when default locale is `en`, content still lives in `en/pages` and `en/docs`, not in the root.
+
+`static` remains shared. It can store common files, or you can split files manually with directories such as `static/ru` and `static/en`.
+
+<DirectoryTree
+  title="Localized content structure"
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'site.json', type: 'file', description: 'global locales, brand, and base site settings' },
+        {
+          name: 'static',
+          type: 'directory',
+          description: 'shared files: images, specifications, changelog',
+          children: [
+            { name: 'examples', type: 'directory' },
+            { name: 'ru', type: 'directory', description: 'optional Russian files' },
+            { name: 'en', type: 'directory', description: 'optional English files' },
+          ],
+        },
+        {
+          name: 'en',
+          type: 'directory',
+          description: 'English content',
+          children: [
+            { name: 'pages', type: 'directory' },
+            { name: 'docs', type: 'directory' },
+            { name: 'site.json', type: 'file', description: 'localized navigation and footer text' },
+          ],
+        },
+        {
+          name: 'ru',
+          type: 'directory',
+          description: 'Russian content',
+          children: [
+            { name: 'pages', type: 'directory' },
+            { name: 'docs', type: 'directory' },
+            { name: 'site.json', type: 'file', description: 'localized navigation and footer text' },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+The language is selected by the first URL segment. If the segment is missing, E-Doc uses `default_locale`.
+
+Content is not mixed between locales. If `/ru/docs/start` is requested, E-Doc only looks in `ru/docs/start.*`. If the file is missing, the result is 404, not a fallback to the default locale.
+
+## Site settings
+
+The root `site.json` contains the locale section:
+
+```json
+{
+  "default_locale": "en",
+  "locales": [
+    { "code": "en", "label": "English" },
+    { "code": "ru", "label": "Русский", "path": "/ru" }
+  ]
+}
+```
+
+With this configuration, English opens without a prefix:
+
+```text
+/              -> English home
+/docs          -> English docs
+/docs/start    -> English document
+```
+
+Russian gets a prefix:
+
+```text
+/ru            -> Russian home
+/ru/docs       -> Russian docs
+/ru/docs/start -> Russian document
+```
+
+If `ru` becomes the default language, the rule works in the opposite direction: Russian opens without a prefix, and English gets `/en`.
+
+## Canonical URL
+
+Each page should have a canonical URL for its own language version.
+
+For the default locale, canonical looks like this:
+
+```html
+<link rel="canonical" href="https://example.com/docs/start">
+```
+
+For the Russian version of the same page, canonical points to the Russian page, not to default:
+
+```html
+<link rel="canonical" href="https://example.com/ru/docs/start">
+```
+
+`/docs/start` and `/ru/docs/start` are not duplicates. They are different language versions, so each version is canonical for itself.
+
+## Alternate and hreflang
+
+When a page has translations, output `alternate` links:
+
+```html
+<link rel="alternate" hreflang="en" href="https://example.com/docs/start">
+<link rel="alternate" hreflang="ru" href="https://example.com/ru/docs/start">
+<link rel="alternate" hreflang="x-default" href="https://example.com/docs/start">
+```
+
+`x-default` should point to the default locale.
+
+If a translation is missing, the language switcher can point to the home page of the selected language, but `alternate` should not be emitted for the missing translation.
+
+## Linking translations
+
+For simple cases, pages can be matched by slug:
+
+```text
+en/docs/start/quick-start.mdx -> /docs/start/quick-start
+ru/docs/start/quick-start.mdx -> /ru/docs/start/quick-start
+```
+
+If slugs differ, use the same `translation_key` in front matter:
+
+```yaml
+---
+title: Quick start
+translation_key: quick-start
+---
+```
+
+```yaml
+---
+title: Быстрый старт
+translation_key: quick-start
+---
+```
+
+The language switcher looks for a page with the same `translation_key` in the selected locale. If it cannot find one, it links to the home page of that locale.
+
+## Language switcher
+
+The language switcher lives in the header and works the same way on site pages and documentation pages.
+
+Rules:
+
+- current language is detected from the URL;
+- the language list is read from `site.json`;
+- the active language should not navigate away;
+- if a translation exists, the link points to the matching page;
+- if no translation exists, the link points to the selected locale root.
+
+## What is already supported
+
+The current version supports the basic i18n set:
+
+1. `LocaleResolver` detects language by URL.
+2. `default_locale` and `locales` are read from `site.json`.
+3. Any locale can be read from `local/storage/edoc/{locale}`.
+4. There is no fallback between locales.
+5. URLs are generated with default locale rules.
+6. Canonical URL is generated for each page.
+7. `alternate` / `hreflang` are generated for existing translations.
+8. `translation_key` is supported in front matter.
+9. Language switcher is shown in the header.
+10. `<html lang="...">` is set correctly.
+
+## Add a translation
+
+To add a Russian version of a document:
+
+1. Create a file in `local/storage/edoc/ru/docs`.
+2. Keep the same directory structure or set the same `translation_key`.
+3. Add a Russian `index.json` for the section if you need localized label, position, or collapsed state.
+4. Check the page at `/ru/docs/...`.
+
+If the translation exists, E-Doc adds it to `hreflang` and the language switcher. If it does not exist, another language page is not substituted automatically.

@@ -1,0 +1,333 @@
+---
+title: Markdown and MDX
+description: When plain Markdown is enough and when MDX with React components is useful.
+sidebar_label: Markdown and MDX
+sidebar_position: 4
+---
+
+import { Section } from '@/Components/Mdx'
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+import { OpenApi } from '@edoc-space/plugin-openapi'
+
+# Markdown and MDX
+
+In E-Doc, you can write regular `.md` files and `.mdx` files with React components. It is usually better to start with Markdown: it is simple, readable directly in the repository, and does not require thinking about frontend code.
+
+Use MDX when plain text is not enough: a home page, interactive block, OpenAPI reference, changelog, directory tree, or a project-specific React component.
+
+## Simple rule
+
+- use `.md` when the page contains text, lists, tables, links, images, and code blocks;
+- use `.mdx` when the page needs a React component;
+- do not convert a document to MDX just in case.
+
+Both file types live in the same structure and open the same way:
+
+<DirectoryTree
+  title="Markdown and MDX side by side"
+  tree={[
+    {
+      name: 'local/storage/edoc/en/docs',
+      type: 'directory',
+      children: [
+        { name: 'installation.md', type: 'file', description: 'regular guide' },
+        { name: 'quick-start.mdx', type: 'file', description: 'guide with DirectoryTree' },
+        { name: 'api.mdx', type: 'file', description: 'page with OpenAPI component' },
+      ],
+    },
+  ]}
+/>
+
+## What Markdown can do
+
+Markdown is enough for most documentation pages:
+
+```markdown
+---
+title: Installation
+description: How to prepare the environment.
+sidebar_position: 10
+---
+
+# Installation
+
+Before starting, check:
+
+- PHP is installed;
+- dependencies are installed;
+- the site opens locally.
+
+[Go to configuration](configuration.md)
+```
+
+This document is easy to read without running the site. That matters for pull requests, review, and repository search.
+
+## Tables
+
+Markdown tables are supported through GitHub Flavored Markdown:
+
+```markdown
+| Feature | Markdown | MDX |
+| --- | --- | --- |
+| Regular text | Yes | Yes |
+| React components | No | Yes |
+| Best for docs | Yes | When components are needed |
+```
+
+**Rendered example:**
+
+| Feature | Markdown | MDX |
+| --- | --- | --- |
+| Regular text | Yes | Yes |
+| React components | No | Yes |
+| Best for docs | Yes | When components are needed |
+
+Tables are useful for short comparisons, parameter lists, and compact references. If a table becomes too wide or interactive, move the data into a component or a separate file.
+
+## Code blocks
+
+For a code block, specify the language after the opening backticks:
+
+````markdown
+```bash title="terminal"
+phpsoftbox up
+phpsoftbox vite-dev
+```
+````
+
+**Rendered example:**
+
+<pre data-language="bash" data-title="terminal"><code>{`phpsoftbox up
+phpsoftbox vite-dev`}</code></pre>
+
+E-Doc renders it as a small window with language label, line numbers, syntax highlighting, and a copy button.
+
+If you need a file title, add `title`:
+
+````markdown
+```json title="site.json"
+{
+  "title": "E-Doc"
+}
+```
+````
+
+**Rendered example:**
+
+<pre data-language="json" data-title="site.json"><code>{`{
+  "title": "E-Doc"
+}`}</code></pre>
+
+## Admonitions
+
+For notes and warnings, use `note`, `tip`, `info`, `warning`, and `danger` blocks:
+
+````markdown
+:::note
+A regular note next to the text.
+:::
+
+:::tip
+A tip that helps complete the flow faster.
+:::
+
+:::info
+Additional information that is not critical.
+:::
+
+:::warning
+Before updating, check that user content lives in `local/storage/edoc`.
+:::
+
+:::danger
+Do not store user files inside E-Doc core code.
+:::
+````
+
+**Rendered examples:**
+
+<div className="markdown-component markdown-component--grid" data-columns="2">
+  <div className="markdown-admonition markdown-admonition--note" data-type="note">
+    <div className="markdown-admonition__title">Note</div>
+    <div className="markdown-admonition__content">
+      <p>A regular note next to the text.</p>
+    </div>
+  </div>
+
+  <div className="markdown-admonition markdown-admonition--tip" data-type="tip">
+    <div className="markdown-admonition__title">Tip</div>
+    <div className="markdown-admonition__content">
+      <p>A tip that helps complete the flow faster.</p>
+    </div>
+  </div>
+
+  <div className="markdown-admonition markdown-admonition--info" data-type="info">
+    <div className="markdown-admonition__title">Info</div>
+    <div className="markdown-admonition__content">
+      <p>Additional information that is not critical.</p>
+    </div>
+  </div>
+
+  <div className="markdown-admonition markdown-admonition--warning" data-type="warning">
+    <div className="markdown-admonition__title">Warning</div>
+    <div className="markdown-admonition__content">
+      <p>Before updating, check that user content lives in <code>local/storage/edoc</code>.</p>
+    </div>
+  </div>
+
+  <div className="markdown-admonition markdown-admonition--danger" data-type="danger">
+    <div className="markdown-admonition__title">Danger</div>
+    <div className="markdown-admonition__content">
+      <p>Do not store user files inside E-Doc core code.</p>
+    </div>
+  </div>
+</div>
+
+These blocks remain regular Markdown content. They do not require MDX.
+
+## Tabs
+
+When you need to show several command variants, use tabs syntax:
+
+````markdown
+:::tabs
+@tab Yarn
+```bash
+yarn add @edoc-space/plugin-openapi
+```
+
+@tab Npm
+```bash
+npm install @edoc-space/plugin-openapi
+```
+:::
+````
+
+**Rendered example:**
+
+<div className="markdown-tabs">
+  <div className="markdown-tabs__nav" role="tablist">
+    <button type="button" className="markdown-tabs__tab markdown-tabs__tab--active" role="tab" data-tab="yarn" aria-selected="true">Yarn</button>
+    <button type="button" className="markdown-tabs__tab" role="tab" data-tab="npm" aria-selected="false">Npm</button>
+  </div>
+  <div className="markdown-tabs__panels">
+    <div className="markdown-tabs__panel markdown-tabs__panel--active" role="tabpanel" data-tab="yarn">
+      <pre data-language="bash"><code>{`yarn add @edoc-space/plugin-openapi`}</code></pre>
+    </div>
+    <div className="markdown-tabs__panel" role="tabpanel" data-tab="npm">
+      <pre data-language="bash"><code>{`npm install @edoc-space/plugin-openapi`}</code></pre>
+    </div>
+  </div>
+</div>
+
+Tabs are useful for alternatives such as `yarn` / `npm`, Docker / Workspace, or Linux / macOS.
+
+## When MDX is needed
+
+Use MDX when a page should contain a component:
+
+```mdx
+---
+title: API
+slug: api
+---
+
+import { OpenApi } from '@edoc-space/plugin-openapi'
+
+# API
+
+<OpenApi source="/storage/edoc/static/openapi.json" />
+```
+
+**Rendered example:**
+
+<OpenApi source="/storage/edoc/static/examples/openapi.json" />
+
+In this example, Markdown handles text and headings, while `OpenApi` renders a richer interface from a JSON file.
+
+## Core components
+
+Some components are included in E-Doc and do not require npm installation:
+
+- `Hero` - the first screen of a page;
+- `Section` - a semantic page block;
+- `Grid` and `Columns` - layout grids;
+- `Feature` and `Card` - compact cards;
+- `Slider`, `Tabs`, `Testimonial` - visual blocks for site pages.
+
+Import core components from `@/Components/Mdx`. If a page also needs an external component, import it from the npm package:
+
+```mdx
+import { Section } from '@/Components/Mdx'
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+<Section title="Structure">
+  Project content lives separately from the engine.
+</Section>
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'en', type: 'directory' },
+        { name: 'ru', type: 'directory' },
+        { name: 'static', type: 'directory' },
+      ],
+    },
+  ]}
+/>
+```
+
+**Rendered example:**
+
+<Section title="Structure">
+  Project content lives separately from the engine.
+</Section>
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'en', type: 'directory' },
+        { name: 'ru', type: 'directory' },
+        { name: 'static', type: 'directory' },
+      ],
+    },
+  ]}
+/>
+
+## What not to do in MDX
+
+MDX can execute frontend code, so use it intentionally:
+
+- do not move a text-only document to MDX without a reason;
+- do not put large data directly into JSX props when it can live in `static`;
+- do not import user plugins from the core `package.json`;
+- do not mix too many unrelated visual blocks on one page.
+
+A good MDX document still reads like documentation. Components support the content instead of replacing it.
+
+## How to choose a format
+
+When in doubt, start with `.md`. When a concrete component need appears, rename the file to `.mdx` and add the import.
+
+The URL does not change:
+
+```text
+docs/start/quick-start.md  -> /docs/start/quick-start
+docs/start/quick-start.mdx -> /docs/start/quick-start
+```
+
+**Reader view:**
+
+Both files open as the same page: [docs/start/quick-start](/docs/start/quick-start).
+
+That makes it safe to start with simple Markdown and make the page richer only when needed.
+
+## Next step
+
+Once you understand the difference between Markdown and MDX, move to [plugins](/docs/plugins/overview): they add ready React components for OpenAPI, changelog, and other complex blocks.

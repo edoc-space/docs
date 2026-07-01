@@ -1,0 +1,196 @@
+---
+title: Языки и локализация
+description: Как E-Doc хранит контент на нескольких языках и строит ссылки между переводами.
+sidebar_label: Языки
+sidebar_position: 5
+---
+
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+# Языки и локализация
+
+E-Doc может публиковать один сайт для нескольких аудиторий: например, английскую документацию в корне сайта и русскую версию по префиксу `/ru`.
+
+Локализация устроена как часть модели documentation as code: каждый язык хранит свой набор файлов, а E-Doc строит URL, меню, canonical и `hreflang` на основе `site.json` и front matter.
+
+## Базовая идея
+
+Каждый язык хранит свои `pages` и `docs` внутри папки языка. Это правило одинаковое и для default locale: если default locale равен `en`, контент все равно лежит в `en/pages` и `en/docs`, а не в корне.
+
+`static` остается общей папкой. В ней можно хранить общие файлы или вручную разделять их по языкам, например `static/ru` и `static/en`.
+
+<DirectoryTree
+  title="Структура контента с локалями"
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'site.json', type: 'file', description: 'глобальная настройка локалей, бренда и базового сайта' },
+        {
+          name: 'static',
+          type: 'directory',
+          description: 'общие файлы: изображения, спецификации, changelog',
+          children: [
+            { name: 'examples', type: 'directory' },
+            { name: 'ru', type: 'directory', description: 'опциональные файлы русской версии' },
+            { name: 'en', type: 'directory', description: 'опциональные файлы английской версии' },
+          ],
+        },
+        {
+          name: 'en',
+          type: 'directory',
+          description: 'английский контент',
+          children: [
+            { name: 'pages', type: 'directory' },
+            { name: 'docs', type: 'directory' },
+            { name: 'site.json', type: 'file', description: 'локализованные подписи меню и футера' },
+          ],
+        },
+        {
+          name: 'ru',
+          type: 'directory',
+          description: 'русский контент',
+          children: [
+            { name: 'pages', type: 'directory' },
+            { name: 'docs', type: 'directory' },
+            { name: 'site.json', type: 'file', description: 'локализованные подписи меню и футера' },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+Язык выбирается по первому сегменту URL. Если сегмент не указан, используется `default_locale`.
+
+Контент между локалями не смешивается. Если запрошена `/ru/docs/start`, E-Doc ищет только `ru/docs/start.*`. Если файла нет, это 404, а не fallback на default locale.
+
+## Настройка сайта
+
+В корневом `site.json` есть секция локалей:
+
+```json
+{
+  "default_locale": "en",
+  "locales": [
+    { "code": "en", "label": "English" },
+    { "code": "ru", "label": "Русский", "path": "/ru" }
+  ]
+}
+```
+
+В такой конфигурации английская версия открывается без префикса:
+
+```text
+/              -> English home
+/docs          -> English docs
+/docs/start    -> English document
+```
+
+Русская версия получает префикс:
+
+```text
+/ru            -> русская главная
+/ru/docs       -> русская документация
+/ru/docs/start -> русский документ
+```
+
+Если default-языком станет `ru`, правило будет работать наоборот: русская версия откроется без префикса, а английская получит `/en`.
+
+## Canonical URL
+
+У каждой страницы должен быть canonical URL для своей языковой версии.
+
+Для default locale canonical выглядит так:
+
+```html
+<link rel="canonical" href="https://example.com/docs/start">
+```
+
+Для русской версии той же страницы canonical указывает на русскую страницу, а не на default:
+
+```html
+<link rel="canonical" href="https://example.com/ru/docs/start">
+```
+
+Это важно: `/docs/start` и `/ru/docs/start` не дубли одной страницы, а разные языковые версии. Поэтому каждая версия канонична сама для себя.
+
+## Alternate и hreflang
+
+Если у страницы есть переводы, нужно выводить `alternate` ссылки:
+
+```html
+<link rel="alternate" hreflang="en" href="https://example.com/docs/start">
+<link rel="alternate" hreflang="ru" href="https://example.com/ru/docs/start">
+<link rel="alternate" hreflang="x-default" href="https://example.com/docs/start">
+```
+
+`x-default` должен вести на default locale.
+
+Если перевода нет, переключатель языка может вести на главную выбранного языка, но `alternate` для отсутствующего перевода выводить не нужно.
+
+## Связь переводов
+
+Для простых случаев страницы можно сопоставлять по slug:
+
+```text
+en/docs/start/quick-start.mdx -> /docs/start/quick-start
+ru/docs/start/quick-start.mdx -> /ru/docs/start/quick-start
+```
+
+Если slug отличается, во front matter нужен общий `translation_key`:
+
+```yaml
+---
+title: Quick start
+translation_key: quick-start
+---
+```
+
+```yaml
+---
+title: Быстрый старт
+translation_key: quick-start
+---
+```
+
+Переключатель языка должен искать страницу с тем же `translation_key` в выбранной локали. Если такой страницы нет, он ведет на главную этой локали.
+
+## Переключатель языка
+
+Переключатель должен жить в header и работать одинаково на страницах сайта и в документации.
+
+Правила:
+
+- текущий язык определяется из URL;
+- список языков берется из `site.json`;
+- активный язык не должен вести на другую страницу;
+- при наличии перевода ссылка ведет на соответствующую страницу;
+- при отсутствии перевода ссылка ведет на корень выбранного языка.
+
+## Что уже поддерживается
+
+В текущей версии работает базовый набор i18n:
+
+1. `LocaleResolver`, который определяет язык по URL.
+2. `default_locale` и `locales` в `site.json`.
+3. Чтение любой локали из `local/storage/edoc/{locale}`.
+4. Отсутствие fallback между локалями.
+5. Генерацию URL с учетом default locale.
+6. Canonical URL для каждой страницы.
+7. `alternate` / `hreflang` для существующих переводов.
+8. `translation_key` во front matter.
+9. Переключатель языка в header.
+10. Корректный `<html lang="...">`.
+
+## Как добавить перевод
+
+Чтобы добавить русскую версию документа:
+
+1. Создайте файл в `local/storage/edoc/ru/docs`.
+2. Сохраните структуру каталогов или задайте общий `translation_key`.
+3. Добавьте русский `index.json` для раздела, если нужно управлять названием, позицией или состоянием раскрытия.
+4. Проверьте страницу по `/ru/docs/...`.
+
+Если перевод существует, E-Doc добавит его в `hreflang` и переключатель языка. Если перевода нет, страница на другом языке не будет подставляться автоматически.

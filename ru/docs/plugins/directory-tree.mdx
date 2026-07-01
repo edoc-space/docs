@@ -1,0 +1,104 @@
+---
+title: DirectoryTree plugin
+description: Как подключить @edoc-space/plugin-directory-tree и вывести структуру каталогов на MDX-странице.
+sidebar_label: DirectoryTree plugin
+sidebar_position: 4
+---
+
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+# DirectoryTree plugin
+
+`@edoc-space/plugin-directory-tree` показывает структуру файлов и каталогов. Его удобно использовать, когда нужно объяснить, где лежит контент, как устроен npm-пакет или какие файлы нужно создать пользователю.
+
+Плагин вынесен из core, потому что дерево каталогов - это отдельный контентный блок с собственной зависимостью на иконки.
+
+## Установка
+
+Установите пакет в пользовательский слой плагинов:
+
+```bash
+cd local/plugins
+yarn add @edoc-space/plugin-directory-tree
+```
+
+или через npm:
+
+```bash
+cd local/plugins
+npm install @edoc-space/plugin-directory-tree
+```
+
+Пакет на npm: [@edoc-space/plugin-directory-tree](https://www.npmjs.com/package/@edoc-space/plugin-directory-tree)
+
+## Inline-структура
+
+Для небольших деревьев структуру можно описать прямо в MDX:
+
+```mdx
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+<DirectoryTree
+  title="Структура контента"
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'docs', type: 'directory' },
+        { name: 'pages', type: 'directory' },
+        { name: 'static', type: 'directory' },
+        { name: 'site.json', type: 'file' },
+      ],
+    },
+  ]}
+/>
+```
+
+Живой пример:
+
+<DirectoryTree
+  title="Структура контента"
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'docs', type: 'directory' },
+        { name: 'pages', type: 'directory' },
+        { name: 'static', type: 'directory' },
+        { name: 'site.json', type: 'file' },
+      ],
+    },
+  ]}
+/>
+
+## JSON-источник
+
+Если структура большая или переиспользуется на нескольких страницах, положите JSON в `static`:
+
+```text
+local/storage/edoc/static/examples/edoc-content-tree.json
+```
+
+И подключите его через публичный URL:
+
+```mdx
+<DirectoryTree source="/storage/edoc/static/examples/edoc-content-tree.json" />
+```
+
+Живой пример:
+
+<DirectoryTree source="/storage/edoc/static/examples/edoc-content-tree.json" />
+
+## Полезные свойства
+
+- `title` - заголовок окна;
+- `description` - текст над деревом;
+- `tree` - inline-структура;
+- `source` - URL JSON-файла;
+- `defaultExpanded` - раскрывать ли папки по умолчанию.
+
+## Следующий шаг
+
+Посмотрите [OpenAPI plugin](/ru/docs/plugins/openapi) и [Changelog plugin](/ru/docs/plugins/changelog), если нужно вывести данные из спецификации или файла истории изменений.

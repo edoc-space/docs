@@ -1,0 +1,7 @@
+{
+  "label": "Content",
+  "description": "File model, site pages, and the project documentation tree.",
+  "position": 2,
+  "collapsed": false,
+  "link": { "type": "generated-index" }
+}

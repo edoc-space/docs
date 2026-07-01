@@ -1,0 +1,72 @@
+---
+title: Changelog plugin
+description: Installing and using @edoc-space/plugin-changelog.
+slug: plugins/changelog
+layout: page
+---
+
+import { Changelog } from '@edoc-space/plugin-changelog'
+import { Hero, Section } from '@/Components/Mdx'
+
+<Hero
+  title="Changelog"
+  eyebrow="@edoc-space/plugin-changelog"
+  subtitle="A React component for rendering release history inside an MDX page."
+>
+  It can read Markdown or JSON, group changes by category, and turn issue numbers into links to an issue tracker.
+</Hero>
+
+<Section title="Installation">
+  Install the package in the user plugin layer.
+
+```shell
+cd local/plugins
+yarn add @edoc-space/plugin-changelog
+```
+
+```shell
+cd local/plugins
+npm install @edoc-space/plugin-changelog
+```
+
+Package on npm: [@edoc-space/plugin-changelog](https://www.npmjs.com/package/@edoc-space/plugin-changelog)
+</Section>
+
+<Section title="Usage">
+Minimal Markdown file:
+
+```markdown
+# Changelog
+
+## 1.1.0 - 2026-06-30
+
+### Added
+
+- Added a public API page.
+
+### Fixed
+
+- Fixed documentation navigation.
+```
+
+MDX page example:
+
+```mdx
+import { Changelog } from '@edoc-space/plugin-changelog'
+
+<Changelog
+  title="Release history"
+  source="/storage/edoc/static/changelog.md"
+/>
+```
+</Section>
+
+<Section title="Example">
+  The component below uses the demo changelog from `static`.
+</Section>
+
+<Changelog
+  title="E-Doc changes"
+  source="/storage/edoc/static/examples/changelog.md"
+  repositoryUrl="https://example.test/edoc"
+/>

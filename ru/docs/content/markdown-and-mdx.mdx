@@ -1,0 +1,333 @@
+---
+title: Markdown и MDX
+description: Когда достаточно обычного Markdown, а когда стоит использовать MDX и React-компоненты.
+sidebar_label: Markdown и MDX
+sidebar_position: 4
+---
+
+import { Section } from '@/Components/Mdx'
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+import { OpenApi } from '@edoc-space/plugin-openapi'
+
+# Markdown и MDX
+
+В E-Doc можно писать обычные `.md` файлы и `.mdx` файлы с React-компонентами. Начинать почти всегда лучше с Markdown: он проще, читается прямо в репозитории и не требует думать о frontend-коде.
+
+MDX нужен там, где обычного текста уже мало: главная страница, интерактивный блок, OpenAPI, changelog, дерево каталогов или проектный React-компонент.
+
+## Простое правило
+
+- используйте `.md`, если страница состоит из текста, списков, таблиц, ссылок, изображений и блоков кода;
+- используйте `.mdx`, если на странице нужен React-компонент;
+- не переводите документ в MDX только “на всякий случай”.
+
+Оба файла живут в одной структуре и открываются одинаково:
+
+<DirectoryTree
+  title="Markdown и MDX рядом"
+  tree={[
+    {
+      name: 'local/storage/edoc/ru/docs',
+      type: 'directory',
+      children: [
+        { name: 'installation.md', type: 'file', description: 'обычная инструкция' },
+        { name: 'quick-start.mdx', type: 'file', description: 'инструкция с DirectoryTree' },
+        { name: 'api.mdx', type: 'file', description: 'страница с OpenAPI-компонентом' },
+      ],
+    },
+  ]}
+/>
+
+## Что умеет Markdown
+
+Markdown подходит для большинства страниц документации:
+
+```markdown
+---
+title: Установка
+description: Как подготовить окружение.
+sidebar_position: 10
+---
+
+# Установка
+
+Перед началом проверьте:
+
+- PHP установлен;
+- зависимости установлены;
+- сайт открывается локально.
+
+[Перейти к настройке](configuration.md)
+```
+
+Такой документ легко читать без запуска сайта. Это важно для pull request, review и поиска по репозиторию.
+
+## Таблицы
+
+Markdown-таблицы поддерживаются через GitHub Flavored Markdown:
+
+```markdown
+| Возможность | Markdown | MDX |
+| --- | --- | --- |
+| Обычный текст | Да | Да |
+| React-компоненты | Нет | Да |
+| Лучше для документации | Да | Когда нужны компоненты |
+```
+
+**Как отобразится:**
+
+| Возможность | Markdown | MDX |
+| --- | --- | --- |
+| Обычный текст | Да | Да |
+| React-компоненты | Нет | Да |
+| Лучше для документации | Да | Когда нужны компоненты |
+
+Таблицы удобны для коротких сравнений, списков параметров и небольших справочников. Если таблица становится слишком широкой или интерактивной, лучше вынести данные в компонент или отдельный файл.
+
+## Code blocks
+
+Для блока кода укажите язык после открывающих backticks:
+
+````markdown
+```bash title="terminal"
+phpsoftbox up
+phpsoftbox vite-dev
+```
+````
+
+**Как отобразится:**
+
+<pre data-language="bash" data-title="terminal"><code>{`phpsoftbox up
+phpsoftbox vite-dev`}</code></pre>
+
+E-Doc покажет такой блок как окно с названием языка, номерами строк и кнопкой копирования.
+
+Если нужен заголовок файла, добавьте `title`:
+
+````markdown
+```json title="site.json"
+{
+  "title": "E-Doc"
+}
+```
+````
+
+**Как отобразится:**
+
+<pre data-language="json" data-title="site.json"><code>{`{
+  "title": "E-Doc"
+}`}</code></pre>
+
+## Admonitions
+
+Для заметок и предупреждений используйте блоки `note`, `tip`, `info`, `warning` и `danger`:
+
+````markdown
+:::note
+Обычная заметка рядом с текстом.
+:::
+
+:::tip
+Совет, который помогает пройти сценарий быстрее.
+:::
+
+:::info
+Дополнительная информация без критичности.
+:::
+
+:::warning
+Перед обновлением проверьте, что пользовательский контент лежит в `local/storage/edoc`.
+:::
+
+:::danger
+Не храните пользовательские файлы внутри core-кода E-Doc.
+:::
+````
+
+**Как отобразится во всех вариантах:**
+
+<div className="markdown-component markdown-component--grid" data-columns="2">
+  <div className="markdown-admonition markdown-admonition--note" data-type="note">
+    <div className="markdown-admonition__title">Note</div>
+    <div className="markdown-admonition__content">
+      <p>Обычная заметка рядом с текстом.</p>
+    </div>
+  </div>
+
+  <div className="markdown-admonition markdown-admonition--tip" data-type="tip">
+    <div className="markdown-admonition__title">Tip</div>
+    <div className="markdown-admonition__content">
+      <p>Совет, который помогает пройти сценарий быстрее.</p>
+    </div>
+  </div>
+
+  <div className="markdown-admonition markdown-admonition--info" data-type="info">
+    <div className="markdown-admonition__title">Info</div>
+    <div className="markdown-admonition__content">
+      <p>Дополнительная информация без критичности.</p>
+    </div>
+  </div>
+
+  <div className="markdown-admonition markdown-admonition--warning" data-type="warning">
+    <div className="markdown-admonition__title">Warning</div>
+    <div className="markdown-admonition__content">
+      <p>Перед обновлением проверьте, что пользовательский контент лежит в <code>local/storage/edoc</code>.</p>
+    </div>
+  </div>
+
+  <div className="markdown-admonition markdown-admonition--danger" data-type="danger">
+    <div className="markdown-admonition__title">Danger</div>
+    <div className="markdown-admonition__content">
+      <p>Не храните пользовательские файлы внутри core-кода E-Doc.</p>
+    </div>
+  </div>
+</div>
+
+Такие блоки остаются обычным Markdown-контентом. Для них не нужен MDX.
+
+## Tabs
+
+Если нужно показать несколько вариантов команды, можно использовать tabs-синтаксис:
+
+````markdown
+:::tabs
+@tab Yarn
+```bash
+yarn add @edoc-space/plugin-openapi
+```
+
+@tab Npm
+```bash
+npm install @edoc-space/plugin-openapi
+```
+:::
+````
+
+**Как отобразится:**
+
+<div className="markdown-tabs">
+  <div className="markdown-tabs__nav" role="tablist">
+    <button type="button" className="markdown-tabs__tab markdown-tabs__tab--active" role="tab" data-tab="yarn" aria-selected="true">Yarn</button>
+    <button type="button" className="markdown-tabs__tab" role="tab" data-tab="npm" aria-selected="false">Npm</button>
+  </div>
+  <div className="markdown-tabs__panels">
+    <div className="markdown-tabs__panel markdown-tabs__panel--active" role="tabpanel" data-tab="yarn">
+      <pre data-language="bash"><code>{`yarn add @edoc-space/plugin-openapi`}</code></pre>
+    </div>
+    <div className="markdown-tabs__panel" role="tabpanel" data-tab="npm">
+      <pre data-language="bash"><code>{`npm install @edoc-space/plugin-openapi`}</code></pre>
+    </div>
+  </div>
+</div>
+
+Tabs удобны для альтернатив вроде `yarn` / `npm`, Docker / Workspace или Linux / macOS.
+
+## Когда нужен MDX
+
+MDX стоит брать, когда страница должна содержать компонент:
+
+```mdx
+---
+title: API
+slug: api
+---
+
+import { OpenApi } from '@edoc-space/plugin-openapi'
+
+# API
+
+<OpenApi source="/storage/edoc/static/openapi.json" />
+```
+
+**Как отобразится:**
+
+<OpenApi source="/storage/edoc/static/examples/openapi.json" />
+
+В этом примере Markdown отвечает за текст и заголовки, а `OpenApi` выводит сложный интерфейс из JSON-файла.
+
+## Core-компоненты
+
+Часть компонентов уже входит в E-Doc и не требует установки npm-пакетов:
+
+- `Hero` - первый экран страницы;
+- `Section` - смысловой блок страницы;
+- `Grid` и `Columns` - сетки;
+- `Feature` и `Card` - небольшие карточки;
+- `Slider`, `Tabs`, `Testimonial` - визуальные блоки для страниц сайта.
+
+Для таких компонентов используйте import из `@/Components/Mdx`. Если рядом нужен внешний компонент, импортируйте его из npm-пакета:
+
+```mdx
+import { Section } from '@/Components/Mdx'
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+<Section title="Структура">
+  Контент проекта лежит отдельно от движка.
+</Section>
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'docs', type: 'directory' },
+        { name: 'pages', type: 'directory' },
+        { name: 'static', type: 'directory' },
+      ],
+    },
+  ]}
+/>
+```
+
+**Как отобразится:**
+
+<Section title="Структура">
+  Контент проекта лежит отдельно от движка.
+</Section>
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'docs', type: 'directory' },
+        { name: 'pages', type: 'directory' },
+        { name: 'static', type: 'directory' },
+      ],
+    },
+  ]}
+/>
+
+## Чего не стоит делать в MDX
+
+MDX может выполнять frontend-код, поэтому его лучше использовать аккуратно:
+
+- не переносите весь текстовый документ в MDX без причины;
+- не вставляйте большие данные прямо в JSX-пропсы, если их можно хранить в `static`;
+- не импортируйте пользовательские плагины из core `package.json`;
+- не смешивайте в одной странице слишком много разных визуальных блоков.
+
+Хороший MDX-документ все еще читается как документация. Компоненты в нем помогают, а не заменяют текст.
+
+## Как выбрать формат
+
+Если сомневаетесь, начните с `.md`. Когда появится конкретная потребность в компоненте, переименуйте файл в `.mdx` и добавьте import.
+
+URL страницы не изменится:
+
+```text
+docs/start/quick-start.md  -> /ru/docs/start/quick-start
+docs/start/quick-start.mdx -> /ru/docs/start/quick-start
+```
+
+**Как это выглядит для читателя:**
+
+Оба файла открываются как одна и та же страница: [docs/start/quick-start](/ru/docs/start/quick-start).
+
+Это позволяет спокойно начинать с простого Markdown и усложнять страницу только тогда, когда это действительно нужно.
+
+## Следующий шаг
+
+Когда вы поняли разницу между Markdown и MDX, можно переходить к [плагинам](/ru/docs/plugins/overview): они добавляют готовые React-компоненты для OpenAPI, changelog и других сложных блоков.

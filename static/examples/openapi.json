@@ -1,0 +1,161 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Documentation Public API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/docs/{slug}": {
+      "get": {
+        "summary": "Open a document",
+        "description": "Returns a public documentation page by slug.",
+        "tags": ["docs", "public"],
+        "operationId": "showDocumentation",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "Document or section slug.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page found.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "301": {
+            "description": "A permanent redirect from index.json was applied."
+          },
+          "404": {
+            "description": "Document not found."
+          }
+        }
+      }
+    },
+    "/{page}": {
+      "get": {
+        "summary": "Open a standalone page",
+        "description": "Used for pages outside the documentation tree.",
+        "tags": ["pages"],
+        "operationId": "showPage",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "Page slug from local/storage/edoc/en/pages.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standalone page rendered."
+          },
+          "404": {
+            "description": "Page not found."
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Check application availability",
+        "description": "Service endpoint for application health checks.",
+        "tags": ["system"],
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "The application responds.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["ok"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/search": {
+      "post": {
+        "summary": "Search documents",
+        "description": "Example endpoint for a future server-side search.",
+        "tags": ["search"],
+        "operationId": "searchDocumentation",
+        "requestBody": {
+          "required": true,
+          "description": "Search query parameters.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["query"],
+                "properties": {
+                  "query": {
+                    "type": "string",
+                    "description": "Search query text."
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Maximum result count."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of found documents.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          },
+                          "href": {
+                            "type": "string"
+                          },
+                          "snippet": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

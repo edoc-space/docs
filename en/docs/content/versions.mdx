@@ -1,0 +1,82 @@
+---
+title: Documentation versions
+description: How to publish the current documentation, supported previous versions, and archived releases.
+sidebar_label: Versions
+sidebar_position: 6
+---
+
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+# Documentation versions
+
+E-Doc keeps the latest documentation in the regular `docs` tree. Older versions are described in `versions.json` and can override only the files that changed.
+
+The current version always opens at `/docs`. Supported previous versions open at `/docs/v/{version}`. Archived versions stay visible on the "All versions" page, but their documentation tree and search are disabled.
+
+## File structure
+
+<DirectoryTree
+  title="Versioned documentation files"
+  tree={[
+    {
+      name: 'local/storage/edoc/en/docs',
+      type: 'directory',
+      children: [
+        { name: 'versions.json', type: 'file', description: 'version list and statuses' },
+        { name: 'content', type: 'directory', description: 'current documentation' },
+        { name: 'start', type: 'directory', description: 'current documentation' },
+        {
+          name: 'versioned_docs',
+          type: 'directory',
+          description: 'overrides for supported previous versions',
+          children: [
+            {
+              name: '1.1.0',
+              type: 'directory',
+              children: [
+                {
+                  name: 'overrides',
+                  type: 'directory',
+                  children: [
+                    { name: 'content/content-model.mdx', type: 'file', description: 'replaces the current document only for 1.1.0' },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+## versions.json
+
+```json
+{
+  "current": "0.1.0",
+  "versions": [
+    { "version": "0.1.0", "label": "0.1.0", "status": "current" },
+    { "version": "0.0.0", "label": "0.0.0", "status": "archived" }
+  ]
+}
+```
+
+Statuses:
+
+- `current` - the latest documentation, available at `/docs`.
+- `supported` - a previous version, available at `/docs/v/{version}`.
+- `archived` - shown as history only; its docs and search are disabled.
+
+## since and until
+
+A document or section can define a version window in front matter:
+
+```md
+---
+title: New feature
+since: 1.2.0
+---
+```
+
+With `since: 1.2.0`, the page is hidden from `1.1.0` and older versions. `until` works in the opposite direction and hides content after the specified version.

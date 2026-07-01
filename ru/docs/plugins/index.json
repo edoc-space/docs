@@ -1,0 +1,7 @@
+{
+  "label": "Плагины",
+  "description": "React-компоненты для MDX-страниц и документации.",
+  "position": 3,
+  "collapsed": false,
+  "link": { "type": "generated-index" }
+}

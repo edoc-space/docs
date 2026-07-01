@@ -1,0 +1,251 @@
+---
+title: How content is organized
+description: Where to store pages, documentation, images, plugins, and site settings.
+sidebar_label: Content model
+sidebar_position: 1
+---
+
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+# How content is organized
+
+In E-Doc, content is separated from the engine code. This keeps the site updateable without overwriting project documentation.
+
+User files live in `local/storage/edoc`:
+
+<DirectoryTree
+  source="/storage/edoc/static/examples/edoc-content-tree.json"
+/>
+
+Plugins have a separate user layer:
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'local/plugins',
+      type: 'directory',
+      children: [
+        { name: 'node_modules', type: 'directory' },
+        { name: 'package.json', type: 'file' },
+      ],
+    },
+  ]}
+/>
+
+## `pages`: standalone site pages
+
+`pages` contains pages that are not part of the documentation tree.
+
+Examples:
+
+- the home page;
+- the plugins page;
+- changelog;
+- an "About" page;
+- a product landing page.
+
+The default English home page usually lives in `local/storage/edoc/en/pages/index.mdx`.
+
+The file `en/pages/plugins.mdx` becomes `/plugins`.
+
+If front matter contains `nav_label`, the page can appear in the top navigation.
+
+## `docs`: project documentation
+
+`docs` is the documentation section available at `/docs` for the default locale.
+
+Example:
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'local/storage/edoc/en/docs',
+      type: 'directory',
+      children: [
+        {
+          name: 'content',
+          type: 'directory',
+          children: [
+            { name: 'content-model.mdx', type: 'file' },
+            { name: 'index.json', type: 'file' },
+            { name: 'site-pages.md', type: 'file' },
+          ],
+        },
+        {
+          name: 'start',
+          type: 'directory',
+          children: [
+            { name: 'index.json', type: 'file' },
+            { name: 'introduction.md', type: 'file' },
+            { name: 'quick-start.mdx', type: 'file' },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+Each `.md` or `.mdx` file becomes a documentation page. The file path becomes the URL unless a manual `slug` is provided.
+
+For example, `en/docs/start/quick-start.mdx` opens as `/docs/start/quick-start`.
+
+## Directories and `index.json`
+
+When documentation grows, group related documents into directories.
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'docs',
+      type: 'directory',
+      children: [
+        {
+          name: 'content',
+          type: 'directory',
+          children: [
+            { name: 'index.json', type: 'file' },
+            { name: 'markdown-and-mdx.mdx', type: 'file' },
+            { name: 'site-pages.md', type: 'file' },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+`index.json` describes the section:
+
+```json
+{
+  "label": "Content",
+  "description": "How to store and organize pages.",
+  "position": 20,
+  "collapsed": false,
+  "link": { "type": "generated-index" }
+}
+```
+
+This tells E-Doc:
+
+- how to name the section in the sidebar;
+- where to place it among other sections;
+- whether to create a generated index page for the directory;
+- whether the section should be collapsed by default.
+
+## `static`: images and files
+
+`static` is the place for files that pages need:
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'local/storage/edoc/static',
+      type: 'directory',
+      children: [
+        {
+          name: 'examples',
+          type: 'directory',
+          children: [
+            { name: 'changelog.md', type: 'file' },
+            { name: 'openapi.json', type: 'file' },
+          ],
+        },
+        {
+          name: 'screenshots',
+          type: 'directory',
+          children: [
+            { name: 'installation.png', type: 'file' },
+          ],
+        },
+        { name: 'logo.svg', type: 'file' },
+      ],
+    },
+  ]}
+/>
+
+The public URL is built from `/storage/edoc/static`:
+
+```markdown
+![Installation screen](/storage/edoc/static/screenshots/installation.png)
+```
+
+The same directory can hold JSON files for OpenAPI or Markdown files for a changelog plugin.
+
+## Code blocks
+
+For a code block, specify the language after the opening backticks:
+
+````markdown
+```php title="example.php"
+<?php
+
+echo 'E-Doc';
+```
+````
+
+The rendered block looks like this:
+
+```php title="example.php"
+<?php
+
+echo 'E-Doc';
+```
+
+In HTML, the language is stored in `data-language`. On the frontend, the block gets syntax highlighting for common languages: `PHP`, `JavaScript`, `TypeScript`, `TSX`, `JSON`, `YAML`, `Markdown`, `MDX`, `bash`, `HTML`, `CSS`, `XML`, and `diff`.
+
+## `site.json`: site chrome
+
+The root `site.json` configures languages and shared site settings:
+
+```json
+{
+  "title": "E-Doc",
+  "default_locale": "en",
+  "locales": [
+    { "code": "en", "label": "English" },
+    { "code": "ru", "label": "Русский", "path": "/ru" }
+  ],
+  "brand": {
+    "name": "e-doc",
+    "href": "/",
+    "logo": "logo.svg"
+  }
+}
+```
+
+Each locale can also have its own `site.json` for localized navigation and footer text.
+
+The logo path is resolved relative to `static`.
+
+## `local/plugins`: plugins
+
+Plugins are installed separately from the core `package.json`:
+
+```bash
+cd local/plugins
+yarn add @edoc-space/plugin-openapi
+```
+
+After that, an MDX page can import the component:
+
+```mdx
+import { OpenApi } from '@edoc-space/plugin-openapi'
+```
+
+This keeps user extensions away from engine updates.
+
+## What you usually should not change
+
+Usually, content work does not require editing:
+
+- `src`;
+- `resources`;
+- core `package.json`;
+- `composer.json`;
+- vendor code.
+
+If the task is about content, start in `local/storage/edoc`. If it is about plugins, start in `local/plugins`.
+
+## Next step
+
+Next, review [site pages](/docs/content/site-pages): how `.md` differs from `.mdx`, and how `slug`, `nav_label`, and `nav_position` work.

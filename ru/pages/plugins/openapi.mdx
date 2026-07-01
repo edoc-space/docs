@@ -1,0 +1,78 @@
+---
+title: OpenAPI plugin
+description: Установка и использование @edoc-space/plugin-openapi.
+slug: plugins/openapi
+layout: page
+---
+
+import { Hero, Section } from '@/Components/Mdx'
+import { OpenApi } from '@edoc-space/plugin-openapi'
+
+<Hero
+  title="OpenAPI"
+  eyebrow="@edoc-space/plugin-openapi"
+  subtitle="React-компонент для вывода OpenAPI-спецификации внутри MDX-страницы."
+>
+  Подходит для публичной документации API: группирует endpoints по тегам, показывает параметры, request body, responses и краткое описание схем.
+</Hero>
+
+<Section title="Установка">
+  Пакет планируется публиковать в npm под организацией `@edoc-space`.
+
+```shell
+cd local/plugins
+yarn add @edoc-space/plugin-openapi
+```
+
+```shell
+cd local/plugins
+npm install @edoc-space/plugin-openapi
+```
+
+Пакет на npm: [@edoc-space/plugin-openapi](https://www.npmjs.com/package/@edoc-space/plugin-openapi)
+</Section>
+
+<Section title="Подключение">
+Минимальный файл спецификации:
+
+```json
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Project API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Проверить состояние",
+        "tags": ["system"],
+        "responses": {
+          "200": {
+            "description": "Приложение отвечает"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Пример MDX-страницы:
+
+```mdx
+import { OpenApi } from '@edoc-space/plugin-openapi'
+
+<OpenApi
+  source="/storage/edoc/static/openapi.json"
+/>
+```
+</Section>
+
+<Section title="Пример">
+  Ниже компонент использует демонстрационную спецификацию из `static`.
+</Section>
+
+<OpenApi
+  source="/storage/edoc/static/examples/openapi.json"
+/>

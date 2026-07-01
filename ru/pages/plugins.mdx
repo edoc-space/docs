@@ -1,0 +1,64 @@
+---
+title: Плагины
+description: React-компоненты для расширения MDX-страниц E-Doc.
+slug: plugins
+layout: page
+nav_label: Плагины
+nav_position: 2
+---
+
+import { Card, Columns, Hero, Section } from '@/Components/Mdx'
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+<Hero
+  title="Плагины"
+  eyebrow="MDX components"
+  subtitle="Готовые React-компоненты для страниц и документации. Подключаются как обычные npm-пакеты и используются внутри MDX."
+>
+  Базовые плагины закрывают типовые задачи: API reference, changelog, интерактивные блоки и визуальные компоненты, которые не хочется описывать вручную в Markdown.
+</Hero>
+
+<Section title="Базовая поставка">
+  Эти плагины предполагается публиковать в npm под организацией `@edoc-space`. Сейчас они развиваются внутри проекта, но пользовательский сценарий должен оставаться таким же, как у обычных frontend-пакетов.
+</Section>
+
+<Columns columns={3}>
+  <Card title="OpenAPI" href="/ru/plugins/openapi" label="Документация">
+    Компонент для вывода OpenAPI-спецификации: endpoints, теги, параметры, request body, responses и краткий preview схем.
+  </Card>
+
+  <Card title="Changelog" href="/ru/plugins/changelog" label="Документация">
+    Компонент для истории изменений из Markdown или JSON: релизы, категории изменений и ссылки на задачи.
+  </Card>
+
+  <Card title="DirectoryTree" href="/ru/plugins/directory-tree" label="Документация">
+    Компонент для структуры каталогов из JSON или inline-дерева: папки, файлы, описания и свернутые ветки.
+  </Card>
+</Columns>
+
+<Section title="Как используются плагины">
+  Плагин устанавливается в проект через package manager, импортируется в `.mdx` странице и дальше работает как обычный React-компонент.
+</Section>
+
+<DirectoryTree
+  title="Структура npm-пакета"
+  description="Минимальная структура плагина, который публикуется в @edoc-space и подключается в MDX."
+  tree={[
+    {
+      name: '@edoc-space/plugin-openapi',
+      type: 'directory',
+      children: [
+        {
+          name: 'src',
+          type: 'directory',
+          children: [
+            { name: 'index.tsx', type: 'file', description: 'экспорт React-компонента' },
+            { name: 'styles.css', type: 'file', description: 'стили плагина' },
+          ],
+        },
+        { name: 'package.json', type: 'file', description: 'name, exports, peer dependencies' },
+        { name: 'README.md', type: 'file', description: 'установка и примеры' },
+      ],
+    },
+  ]}
+/>

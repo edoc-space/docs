@@ -1,0 +1,17 @@
+{
+  "title": "E-Doc",
+  "description": "Modern documentation platform.",
+  "default_locale": "en",
+  "locales": [
+    { "code": "en", "label": "English" },
+    { "code": "ru", "label": "Русский", "path": "/ru" }
+  ],
+  "brand": {
+    "name": "e-doc",
+    "href": "/",
+    "logo": "logo.svg"
+  },
+  "links": {
+    "github": "https://github.com/edoc-space/edoc"
+  }
+}

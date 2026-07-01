@@ -1,0 +1,258 @@
+---
+title: Как устроен контент
+description: Где хранить страницы, документацию, изображения, плагины и настройки сайта.
+sidebar_label: Как устроен контент
+sidebar_position: 1
+---
+
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+# Как устроен контент
+
+В E-Doc контент отделен от кода движка. Это нужно, чтобы сайт можно было обновлять, не перетирая документацию проекта.
+
+Пользовательские файлы живут в `local/storage/edoc`:
+
+<DirectoryTree
+  source="/storage/edoc/static/examples/edoc-content-tree.json"
+/>
+
+Рядом с этим есть отдельная зона для плагинов:
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'local/plugins',
+      type: 'directory',
+      children: [
+        { name: 'node_modules', type: 'directory' },
+        { name: 'package.json', type: 'file' },
+      ],
+    },
+  ]}
+/>
+
+## `pages`: отдельные страницы сайта
+
+`pages` - это страницы, которые не входят в дерево документации.
+
+Примеры:
+
+- главная страница;
+- страница "Плагины";
+- changelog;
+- страница "О проекте";
+- landing-страница продукта.
+
+Главная страница обычно лежит в `local/storage/edoc/ru/pages/index.mdx`.
+
+Файл `ru/pages/plugins.mdx` станет страницей `/ru/plugins`.
+
+Если в front matter есть `nav_label`, страница может попасть в верхнее меню.
+
+## `docs`: основная документация
+
+`docs` - это раздел русской версии сайта по адресу `/ru/docs`.
+
+Пример:
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'local/storage/edoc/ru/docs',
+      type: 'directory',
+      children: [
+        {
+          name: 'content',
+          type: 'directory',
+          children: [
+            { name: 'content-model.mdx', type: 'file' },
+            { name: 'index.json', type: 'file' },
+            { name: 'site-pages.md', type: 'file' },
+          ],
+        },
+        {
+          name: 'start',
+          type: 'directory',
+          children: [
+            { name: 'index.json', type: 'file' },
+            { name: 'introduction.md', type: 'file' },
+            { name: 'quick-start.mdx', type: 'file' },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+Каждый `.md` или `.mdx` файл становится страницей документации. Путь файла превращается в URL, если не указан ручной `slug`.
+
+Например:
+
+`ru/docs/start/quick-start.mdx` откроется как `/ru/docs/start/quick-start`.
+
+## Каталоги и `index.json`
+
+Когда документов становится больше, их удобно группировать в каталоги.
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'docs',
+      type: 'directory',
+      children: [
+        {
+          name: 'content',
+          type: 'directory',
+          children: [
+            { name: 'index.json', type: 'file' },
+            { name: 'markdown-and-mdx.md', type: 'file' },
+            { name: 'site-pages.md', type: 'file' },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+`index.json` описывает сам раздел:
+
+```json
+{
+  "label": "Контент",
+  "description": "Как хранить и организовывать страницы.",
+  "position": 20,
+  "collapsed": false,
+  "link": { "type": "generated-index" }
+}
+```
+
+Так E-Doc понимает:
+
+- как назвать раздел в меню;
+- где поставить его среди других разделов;
+- нужно ли создать страницу-оглавление раздела;
+- должен ли раздел быть свернут по умолчанию.
+
+## `static`: изображения и файлы
+
+`static` - место для файлов, которые нужны страницам:
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'local/storage/edoc/static',
+      type: 'directory',
+      children: [
+        {
+          name: 'examples',
+          type: 'directory',
+          children: [
+            { name: 'changelog.md', type: 'file' },
+            { name: 'openapi.json', type: 'file' },
+          ],
+        },
+        {
+          name: 'screenshots',
+          type: 'directory',
+          children: [
+            { name: 'installation.png', type: 'file' },
+          ],
+        },
+        { name: 'logo.svg', type: 'file' },
+      ],
+    },
+  ]}
+/>
+
+Публичный URL строится от `/storage/edoc/static`:
+
+```markdown
+![Экран установки](/storage/edoc/static/screenshots/installation.png)
+```
+
+Так же можно подключать JSON-файлы для OpenAPI или Markdown-файл для changelog-плагина.
+
+## Блоки кода
+
+Для code block можно указывать язык через обычный Markdown-синтаксис:
+
+````markdown
+```php title="example.php"
+<?php
+
+echo 'E-Doc';
+```
+````
+
+Такой блок будет выглядеть так:
+
+```php title="example.php"
+<?php
+
+echo 'E-Doc';
+```
+
+В HTML язык попадает в `data-language`, а на фронте блок получает подсветку синтаксиса для базовых языков: `PHP`, `JavaScript`, `TypeScript`, `TSX`, `JSON`, `YAML`, `Markdown`, `MDX`, `bash`, `HTML`, `CSS`, `XML` и `diff`.
+
+## `site.json`: оболочка сайта
+
+`site.json` управляет общей оболочкой:
+
+```json
+{
+  "title": "E-Doc",
+  "brand": {
+    "name": "e-doc",
+    "href": "/",
+    "logo": "logo.svg"
+  },
+  "navigation": [
+    { "source": "pages" },
+    { "label": "Документация", "href": "/docs" }
+  ]
+}
+```
+
+Здесь задаются:
+
+- название сайта;
+- логотип;
+- верхнее меню;
+- футер;
+- источники навигации.
+
+Логотип указывается относительно `static`.
+
+## `local/plugins`: плагины
+
+Плагины ставятся отдельно от core `package.json`:
+
+```bash
+cd local/plugins
+yarn add @edoc-space/plugin-openapi
+```
+
+После этого MDX-страница может импортировать компонент:
+
+```mdx
+import { OpenApi } from '@edoc-space/plugin-openapi'
+```
+
+Так пользовательские расширения не конфликтуют с обновлением движка.
+
+## Что не нужно менять
+
+Обычно не нужно править:
+
+- `src`;
+- `resources`;
+- core `package.json`;
+- `composer.json`;
+- vendor-код.
+
+Если задача касается контента, начните с `local/storage/edoc`. Если задача касается плагинов, начните с `local/plugins`.
+
+## Следующий шаг
+
+Теперь можно подробнее разобрать [страницы сайта](/ru/docs/content/site-pages): чем отличаются `.md` и `.mdx`, как работают `slug`, `nav_label` и `nav_position`.

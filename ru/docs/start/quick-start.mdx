@@ -1,0 +1,278 @@
+---
+title: Быстрый старт
+description: Как быстро запустить E-Doc локально и понять, где менять первый контент.
+sidebar_label: Быстрый старт
+sidebar_position: 2
+---
+
+import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
+
+# Быстрый старт
+
+Эта страница помогает быстро понять рабочий цикл E-Doc: как поднять сайт, где лежит контент и какой файл поменять первым.
+
+E-Doc не требует базы данных для публичной документации. В простом запуске нужны только PHP для приложения и Node.js для frontend-сборки.
+
+## Что получится
+
+В конце вы будете понимать:
+
+- как запустить E-Doc через `phpsoftbox/workspace`;
+- что делать, если хочется свой легкий Docker без Workspace;
+- где находится главная страница;
+- где находится документация;
+- как добавить первую страницу и проверить результат.
+
+## Рекомендуемый путь: Installer и Workspace
+
+`phpsoftbox/installer` ставит CLI-команду `phpsoftbox`, а `phpsoftbox/workspace` дает готовый Docker-набор для PHP-приложения: `nginx`, `php-fpm`, `php-cli` и Vite dev server.
+
+Для E-Doc обычно достаточно двух профилей:
+
+```ini
+[profiles]
+default_profiles = web cli
+```
+
+Профиль `web` поднимает web-сервер и PHP-FPM, профиль `cli` нужен для `composer install`, `yarn install`, тестов и одноразовых команд.
+
+## Установить Installer
+
+Installer можно поставить через shell script:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/phpsoftbox/installer/master/install.sh)"
+```
+
+или через Composer:
+
+```bash
+composer global require \
+  phpsoftbox/installer:dev-master \
+  phpsoftbox/cli-app:dev-master \
+  phpsoftbox/error-formatter:dev-master \
+  --prefer-stable
+```
+
+Если команда `phpsoftbox` не находится, добавьте Composer global bin directory в `PATH`:
+
+```bash
+export PATH="$(composer -q global config bin-dir --absolute):$PATH"
+```
+
+Проверка:
+
+```bash
+phpsoftbox list
+```
+
+## Поднять E-Doc в Workspace
+
+Создайте рабочую директорию:
+
+```bash
+phpsoftbox workspace:install edoc-workspace
+cd edoc-workspace
+phpsoftbox workspace:init
+```
+
+После этого положите приложение E-Doc в `local/backend`. Обычно это будет clone репозитория проекта:
+
+```bash
+git clone https://github.com/edoc-space/edoc.git local/backend
+```
+
+Убедитесь, что в `.workspace.ini` включены минимальные профили:
+
+```bash
+phpsoftbox profiles:set web cli
+```
+
+Подготовьте зависимости и запустите окружение:
+
+```bash
+phpsoftbox init
+phpsoftbox up
+phpsoftbox vite-dev
+```
+
+В стандартном Workspace сайт откроется на:
+
+```text
+http://localhost:8080
+```
+
+Vite dev server будет доступен на:
+
+```text
+http://localhost:5173
+```
+
+Если проект настраивает Traefik и локальные домены, адреса могут быть другими, например `https://e-doc.local` и `https://vite.e-doc.local`.
+
+## Если нужен свой Docker
+
+Workspace не обязателен. Для своего минимального окружения достаточно:
+
+- PHP 8.4+ или PHP-FPM;
+- Composer;
+- Node.js 22+;
+- Yarn или npm;
+- web-server, который отдает `public/index.php`.
+
+Базовый порядок такой:
+
+```bash
+cd local/backend
+composer install
+yarn install
+cp config/env/.env.example config/env/.env
+```
+
+Для локальной проверки без Nginx можно использовать встроенный PHP server:
+
+```bash
+APP_URL=http://127.0.0.1:8080 \
+VITE_DEV_SERVER=http://127.0.0.1:5173 \
+php -S 127.0.0.1:8080 -t public public/index.php
+```
+
+В отдельном терминале запустите Vite:
+
+```bash
+yarn dev --host 127.0.0.1 --port 5173
+```
+
+Этот путь удобен, если вы уже поддерживаете собственный Docker и не хотите брать готовый Workspace.
+
+## Где лежит контент
+
+Основной пользовательский контент находится здесь:
+
+<DirectoryTree
+  title="Пользовательский контент"
+  tree={[
+    {
+      name: 'local/storage/edoc',
+      type: 'directory',
+      children: [
+        { name: 'site.json', type: 'file', description: 'глобальные языки, бренд и базовые настройки сайта' },
+        { name: 'static', type: 'directory', description: 'общие изображения, OpenAPI-файлы, changelog и другие файлы' },
+        {
+          name: 'en',
+          type: 'directory',
+          description: 'английский контент',
+          children: [
+            { name: 'pages', type: 'directory' },
+            { name: 'docs', type: 'directory' },
+            { name: 'site.json', type: 'file' },
+          ],
+        },
+        {
+          name: 'ru',
+          type: 'directory',
+          description: 'русский контент',
+          children: [
+            { name: 'pages', type: 'directory', description: 'отдельные страницы сайта' },
+            { name: 'docs', type: 'directory', description: 'документация в разделе /ru/docs' },
+            { name: 'site.json', type: 'file', description: 'локализованное меню и футер' },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+Назначение простое:
+
+- `ru/pages` - отдельные страницы русской версии сайта, например главная или страница плагинов;
+- `ru/docs` - русская документация в разделе `/ru/docs`;
+- `static` - изображения, OpenAPI-файлы, changelog и другие файлы;
+- `site.json` - языки, логотип, верхнее меню и футер.
+
+Эта папка относится к пользовательскому слою. Она не должна конфликтовать с обновлением движка E-Doc.
+
+## Изменить главную страницу
+
+Главная страница сейчас лежит здесь:
+
+```text
+local/storage/edoc/ru/pages/index.mdx
+```
+
+Откройте файл, поменяйте текст в `Hero` или в одном из блоков, затем обновите главную страницу.
+
+Если Vite dev server запущен, изменение должно появиться без отдельной сборки.
+
+## Добавить документ
+
+Документация находится в:
+
+```text
+local/storage/edoc/ru/docs
+```
+
+Минимальный документ выглядит так:
+
+```markdown
+---
+title: Установка
+description: Как установить проект локально.
+sidebar_position: 10
+---
+
+# Установка
+
+Опишите здесь шаги установки.
+```
+
+Если сохранить его как:
+
+```text
+local/storage/edoc/ru/docs/installation.md
+```
+
+страница откроется по адресу:
+
+```text
+/ru/docs/installation
+```
+
+## Добавить страницу в верхнее меню
+
+Для отдельной страницы сайта создайте файл в `pages`:
+
+```text
+local/storage/edoc/ru/pages/about.md
+```
+
+Пример:
+
+```markdown
+---
+title: О проекте
+slug: about
+nav_label: О проекте
+nav_position: 10
+---
+
+# О проекте
+
+Коротко расскажите, для кого этот сайт и что в нем можно найти.
+```
+
+После обновления сайта пункт `О проекте` появится в верхнем меню.
+
+## Проверка
+
+Проверьте три адреса:
+
+- `/` - главная страница;
+- `/ru/docs` - основная документация русской версии;
+- `/about` - новая standalone-страница, если вы создали пример выше.
+
+Если страница не появилась, проверьте front matter: чаще всего ошибка в `slug`, `nav_label` или отступах YAML.
+
+## Следующий шаг
+
+Дальше стоит разобраться с файловой моделью: [как устроен контент](/ru/docs/content/content-model).
