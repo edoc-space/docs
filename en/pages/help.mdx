@@ -1,0 +1,46 @@
+---
+title: Help Center
+description: A task-focused entry point into E-Doc documentation.
+layout: default
+nav_label: Help Center
+nav_position: 2
+header_hidden: true
+---
+
+import {
+  HelpCenter,
+  HelpFaq,
+  HelpLink,
+  HelpSection,
+} from '@/Components/Mdx'
+
+<HelpCenter
+  title="E-Doc Help Center"
+  subtitle="A task-focused entry point into docs, common workflows, and project extension."
+  searchProvider="static"
+  searchPlaceholder="Search documentation"
+>
+  <HelpSection title="Popular tasks" columns={4}>
+    <HelpLink href="/docs/start/quick-start" icon="01" description="Run a local project and open the documentation site.">Quick start</HelpLink>
+    <HelpLink href="/docs/content/markdown-and-mdx" icon="02" description="Choose Markdown or MDX for a page.">Markdown and MDX</HelpLink>
+    <HelpLink href="/docs/content/site-pages" icon="03" description="Build a home page, changelog, or plugin page.">Site pages</HelpLink>
+    <HelpLink href="/docs/plugins/overview" icon="04" description="Connect a ready component or your own package.">Plugins</HelpLink>
+  </HelpSection>
+
+  <HelpSection title="Getting started">
+    <HelpLink href="/docs/start/introduction" icon="A">Introduction</HelpLink>
+    <HelpLink href="/docs/content/content-model" icon="B">Content model</HelpLink>
+    <HelpLink href="/docs/content/project-documentation" icon="C">Project documentation</HelpLink>
+  </HelpSection>
+
+  <HelpSection title="By integration type">
+    <HelpLink href="/docs/plugins/openapi" icon="API">OpenAPI</HelpLink>
+    <HelpLink href="/docs/plugins/directory-tree" icon="DIR">DirectoryTree</HelpLink>
+    <HelpLink href="/docs/plugins/changelog" icon="LOG">Changelog</HelpLink>
+  </HelpSection>
+
+  <HelpSection title="FAQ" columns={2}>
+    <HelpFaq question="Where do I store the home page?" href="/docs/content/site-pages" />
+    <HelpFaq question="How do I version documentation?" href="/docs/content/versions" />
+  </HelpSection>
+</HelpCenter>

@@ -1,0 +1,46 @@
+---
+title: Центр помощи
+description: Быстрый вход в документацию E-Doc по задачам и ролям.
+layout: default
+nav_label: Центр помощи
+nav_position: 2
+header_hidden: true
+---
+
+import {
+  HelpCenter,
+  HelpFaq,
+  HelpLink,
+  HelpSection,
+} from '@/Components/Mdx'
+
+<HelpCenter
+  title="Центр помощи E-Doc"
+  subtitle="Быстрый вход в документацию по частым задачам, сценариям и расширению проекта."
+  searchProvider="static"
+  searchPlaceholder="Поиск по документации"
+>
+  <HelpSection title="Популярные задачи" columns={4}>
+    <HelpLink href="/ru/docs/start/quick-start" icon="01" description="Запустить локальный проект и открыть сайт документации.">Быстрый старт</HelpLink>
+    <HelpLink href="/ru/docs/content/markdown-and-mdx" icon="02" description="Выбрать Markdown или MDX для страницы.">Markdown и MDX</HelpLink>
+    <HelpLink href="/ru/docs/content/site-pages" icon="03" description="Собрать главную, changelog или страницу плагина.">Страницы сайта</HelpLink>
+    <HelpLink href="/ru/docs/plugins/overview" icon="04" description="Подключить готовый компонент или свой пакет.">Плагины</HelpLink>
+  </HelpSection>
+
+  <HelpSection title="Начало работы">
+    <HelpLink href="/ru/docs/start/introduction" icon="A">Введение</HelpLink>
+    <HelpLink href="/ru/docs/content/content-model" icon="B">Модель контента</HelpLink>
+    <HelpLink href="/ru/docs/content/project-documentation" icon="C">Документация проекта</HelpLink>
+  </HelpSection>
+
+  <HelpSection title="По типу интеграции">
+    <HelpLink href="/ru/docs/plugins/openapi" icon="API">OpenAPI</HelpLink>
+    <HelpLink href="/ru/docs/plugins/directory-tree" icon="DIR">DirectoryTree</HelpLink>
+    <HelpLink href="/ru/docs/plugins/changelog" icon="LOG">Changelog</HelpLink>
+  </HelpSection>
+
+  <HelpSection title="Частые вопросы" columns={2}>
+    <HelpFaq question="Где хранить главную страницу?" href="/ru/docs/content/site-pages" />
+    <HelpFaq question="Как версионировать документацию?" href="/ru/docs/content/versions" />
+  </HelpSection>
+</HelpCenter>
