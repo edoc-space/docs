@@ -139,54 +139,6 @@ import { Hero, Section, Grid, Feature } from '@/Components/Mdx'
 </Grid>
 ```
 
-Если главная должна быть центром помощи, используйте `HelpCenter`. По умолчанию он лениво загружает статический индекс `/docs/search-index.json` только после открытия поиска:
-
-> `HelpCenter` и `searchProvider` доступны с E-Doc v1.1.0.
-
-```mdx
-import {
-  HelpCenter,
-  HelpFaq,
-  HelpLink,
-  HelpSection,
-} from '@/Components/Mdx'
-
-<HelpCenter
-  title="CHGS WMS"
-  subtitle="Как мы можем помочь?"
-  searchProvider="static"
-  searchPlaceholder="Поиск по базе знаний"
->
-  <HelpSection title="Популярные задачи" columns={4}>
-    <HelpLink href="/ru/docs/receiving" icon="📦">Приемка</HelpLink>
-    <HelpLink href="/ru/docs/shipping" icon="📤">Отгрузка</HelpLink>
-    <HelpLink href="/ru/docs/inventory" icon="📋">Инвентаризация</HelpLink>
-    <HelpLink href="/ru/docs/labels" icon="🏷">Напечатать этикетку</HelpLink>
-  </HelpSection>
-
-  <HelpSection title="По ролям">
-    <HelpLink href="/ru/docs/roles/employee" icon="👷">Сотрудник</HelpLink>
-    <HelpLink href="/ru/docs/roles/manager" icon="👨‍💼">Менеджер</HelpLink>
-    <HelpLink href="/ru/docs/roles/admin" icon="🛠">Администратор</HelpLink>
-  </HelpSection>
-
-  <HelpSection title="Частые вопросы" columns={2}>
-    <HelpFaq question="Как выбрать склад?" href="/ru/docs/start/warehouse" />
-    <HelpFaq question="Как перепечатать этикетку?" href="/ru/docs/labels/reprint" />
-  </HelpSection>
-</HelpCenter>
-```
-
-Для больших проектов позже можно переключить тот же компонент на backend search provider:
-
-```mdx
-<HelpCenter
-  title="CHGS WMS"
-  subtitle="Как мы можем помочь?"
-  searchProvider={{ type: 'api', endpoint: '/api/docs/search' }}
-/>
-```
-
 ## Страница с плагином
 
 MDX-страница может импортировать plugin component:

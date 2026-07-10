@@ -34,7 +34,7 @@ npm install @edoc-space/plugin-changelog
 Создайте файл:
 
 ```text
-local/storage/edoc/static/changelog.md
+local/storage/edoc/static/changelog.ru.md
 ```
 
 Минимальный пример:
@@ -42,14 +42,14 @@ local/storage/edoc/static/changelog.md
 ```markdown
 # Changelog
 
-## 1.1.0 - 2026-06-30
+## v1.1.0 - 2026-07-10
 
-### Added
+### Добавлено
 
 - Добавлена публичная страница API.
 - Добавлен поиск по документации.
 
-### Fixed
+### Исправлено
 
 - Исправлена навигация между разделами.
 ```
@@ -57,7 +57,7 @@ local/storage/edoc/static/changelog.md
 Публичный путь к файлу будет таким:
 
 ```text
-/storage/edoc/static/changelog.md
+/storage/edoc/static/changelog.ru.md
 ```
 
 ## Создать MDX-страницу
@@ -81,8 +81,7 @@ import { Changelog } from '@edoc-space/plugin-changelog'
 # Changelog
 
 <Changelog
-  title="История изменений"
-  source="/storage/edoc/static/changelog.md"
+  source="/storage/edoc/static/changelog.ru.md"
 />
 ```
 
@@ -98,8 +97,7 @@ import { Changelog } from '@edoc-space/plugin-changelog'
 
 ```mdx
 <Changelog
-  title="История изменений"
-  source="/storage/edoc/static/changelog.md"
+  source="/storage/edoc/static/changelog.ru.md"
   repositoryUrl="https://github.com/edoc-space/edoc"
   categoryLabels={{
     added: 'Добавлено',
@@ -125,7 +123,7 @@ import { Changelog } from '@edoc-space/plugin-changelog'
   "entries": [
     {
       "version": "1.1.0",
-      "date": "2026-06-30",
+      "date": "2026-07-10",
       "changes": {
         "added": [
           "Добавлена публичная страница API."
@@ -148,6 +146,6 @@ import { Changelog } from '@edoc-space/plugin-changelog'
 - релизы идут в ожидаемом порядке;
 - категории изменений подписаны понятными словами;
 - Markdown-файл открывается по прямому URL;
-- в консоли браузера нет ошибки загрузки `changelog.md`.
+- в консоли браузера нет ошибки загрузки `changelog.ru.md`.
 
 Если пакет не резолвится, вернитесь к странице [Плагины](/ru/docs/plugins/overview) и проверьте установку в `local/plugins`.

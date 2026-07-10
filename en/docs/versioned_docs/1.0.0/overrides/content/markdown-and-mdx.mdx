@@ -5,7 +5,7 @@ sidebar_label: Markdown and MDX
 sidebar_position: 4
 ---
 
-import { Gallery, Section, Video } from '@/Components/Mdx'
+import { Section } from '@/Components/Mdx'
 import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
 import { OpenApi } from '@edoc-space/plugin-openapi'
 
@@ -83,83 +83,6 @@ Markdown tables are supported through GitHub Flavored Markdown:
 | Best for docs | Yes | When components are needed |
 
 Tables are useful for short comparisons, parameter lists, and compact references. If a table becomes too wide or interactive, move the data into a component or a separate file.
-
-## Images and Video
-
-> Available since E-Doc v1.1.0: fullscreen image preview, gallery grouping, and safe video blocks.
-
-Insert a regular image with standard Markdown syntax. When clicked, E-Doc opens it in a fullscreen preview, and text from `title` is shown as the image caption:
-
-```markdown
-![Horizontal example](/examples/media/cat_hor.jpg "Horizontal image")
-```
-
-**Rendered example:**
-
-<img src="/storage/edoc/static/examples/media/cat_hor.jpg" alt="Horizontal example" title="Horizontal image" />
-
-When images should be browsed together, group them with the same `gallery` id. Blocks can be placed in different parts of the page:
-
-````markdown
-:::gallery install
-![Step 1](/examples/media/dog_hor.jpg "First step")
-:::
-
-Text between images.
-
-:::gallery install
-![Step 2](/examples/media/jack-russell_ver.jpg "Vertical shot")
-![Step 3](/examples/media/animals_ver.jpg "Another vertical shot")
-:::
-
-:::gallery after_install
-![Result](/examples/media/jack-russell_hor.jpg "After install")
-:::
-````
-
-**Rendered example:**
-
-<Gallery id="install">
-  <img src="/storage/edoc/static/examples/media/dog_hor.jpg" alt="Step 1" title="First step" />
-</Gallery>
-
-Text between images.
-
-<Gallery id="install">
-  <img src="/storage/edoc/static/examples/media/jack-russell_ver.jpg" alt="Step 2" title="Vertical shot" />
-  <img src="/storage/edoc/static/examples/media/animals_ver.jpg" alt="Step 3" title="Another vertical shot" />
-</Gallery>
-
-<Gallery id="after_install">
-  <img src="/storage/edoc/static/examples/media/jack-russell_hor.jpg" alt="Result" title="After install" />
-</Gallery>
-
-For video, use safe `video` blocks. E-Doc does not load the iframe immediately: it shows a load button first, so third-party video scripts do not run when the page is only opened. YouTube, RuTube, and VK Video are supported:
-
-````markdown
-:::video youtube
-https://www.youtube.com/watch?v=K4TOrB7at0Y
-title="YouTube example"
-:::
-
-:::video rutube
-https://rutube.ru/video/f39214593c1933a60c57de704a5ee8cb/
-title="RuTube example"
-:::
-
-:::video vkvideo
-https://vkvideo.ru/video_ext.php?oid=-239594766&id=456239018&hd=3
-title="VK Video example"
-:::
-````
-
-For VK Video, copy the `src` value from the iframe that VK shows in "Share" / "Embed". A regular page URL like `https://vkvideo.ru/video-239594766_456239018` is not an embed URL and opens as an external link.
-
-**Rendered example:**
-
-<Video provider="youtube" src="https://www.youtube.com/watch?v=K4TOrB7at0Y" title="YouTube example" />
-<Video provider="rutube" src="https://rutube.ru/video/f39214593c1933a60c57de704a5ee8cb/" title="RuTube example" />
-<Video provider="vkvideo" src="https://vkvideo.ru/video_ext.php?oid=-239594766&id=456239018&hd=3" title="VK Video example" />
 
 ## Code blocks
 

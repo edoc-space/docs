@@ -13,7 +13,8 @@
       "description": "shared assets, OpenAPI files, changelog files, and examples",
       "children": [
         { "name": "examples/openapi.json", "type": "file" },
-        { "name": "examples/changelog.md", "type": "file" }
+        { "name": "examples/changelog.en.md", "type": "file" },
+        { "name": "examples/changelog.ru.md", "type": "file" }
       ]
     },
     {

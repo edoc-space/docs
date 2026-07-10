@@ -34,7 +34,7 @@ Package on npm: [@edoc-space/plugin-changelog](https://www.npmjs.com/package/@ed
 Create a file:
 
 ```text
-local/storage/edoc/static/changelog.md
+local/storage/edoc/static/changelog.en.md
 ```
 
 Minimal example:
@@ -42,7 +42,7 @@ Minimal example:
 ```markdown
 # Changelog
 
-## 1.1.0 - 2026-06-30
+## v1.1.0 - 2026-07-10
 
 ### Added
 
@@ -57,7 +57,7 @@ Minimal example:
 The public file path is:
 
 ```text
-/storage/edoc/static/changelog.md
+/storage/edoc/static/changelog.en.md
 ```
 
 ## Create an MDX page
@@ -81,8 +81,7 @@ import { Changelog } from '@edoc-space/plugin-changelog'
 # Changelog
 
 <Changelog
-  title="Release history"
-  source="/storage/edoc/static/changelog.md"
+  source="/storage/edoc/static/changelog.en.md"
 />
 ```
 
@@ -98,8 +97,7 @@ Configure the component through props:
 
 ```mdx
 <Changelog
-  title="Release history"
-  source="/storage/edoc/static/changelog.md"
+  source="/storage/edoc/static/changelog.en.md"
   repositoryUrl="https://github.com/edoc-space/edoc"
   categoryLabels={{
     added: 'Added',
@@ -125,7 +123,7 @@ If Markdown is inconvenient, use JSON:
   "entries": [
     {
       "version": "1.1.0",
-      "date": "2026-06-30",
+      "date": "2026-07-10",
       "changes": {
         "added": [
           "Added a public API page."
@@ -148,6 +146,6 @@ Open the page and check:
 - releases appear in the expected order;
 - categories have understandable labels;
 - the Markdown file opens by direct URL;
-- browser console has no `changelog.md` loading error.
+- browser console has no `changelog.en.md` loading error.
 
 If the package is not resolved, return to [Plugins](/docs/plugins/overview) and check installation in `local/plugins`.

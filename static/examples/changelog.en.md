@@ -19,11 +19,6 @@ This release expands E-Doc from a documentation renderer into a richer documenta
 - Media examples were added to Markdown/MDX documentation.
 - Site page documentation now includes a Help Center example and the future `api` search provider shape.
 
-### Fixed
-
-- VK Video examples now use the `video_ext.php` URL from the iframe `src`.
-- Single images open as single-image previews instead of being grouped implicitly.
-
 ## v1.0.0 - 2026-07-01
 
 The first stable E-Doc release covers the base workflow: run a self-hosted documentation site, store content in Markdown/MDX files, and extend pages with React plugins without editing core code.

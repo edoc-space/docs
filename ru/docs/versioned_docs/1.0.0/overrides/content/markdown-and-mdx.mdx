@@ -5,7 +5,7 @@ sidebar_label: Markdown и MDX
 sidebar_position: 4
 ---
 
-import { Gallery, Section, Video } from '@/Components/Mdx'
+import { Section } from '@/Components/Mdx'
 import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
 import { OpenApi } from '@edoc-space/plugin-openapi'
 
@@ -83,83 +83,6 @@ Markdown-таблицы поддерживаются через GitHub Flavored 
 | Лучше для документации | Да | Когда нужны компоненты |
 
 Таблицы удобны для коротких сравнений, списков параметров и небольших справочников. Если таблица становится слишком широкой или интерактивной, лучше вынести данные в компонент или отдельный файл.
-
-## Изображения и видео
-
-> Доступно с E-Doc v1.1.0: полноэкранный preview изображений, группировка в галереи и безопасные video-блоки.
-
-Обычное изображение вставляется стандартным Markdown-синтаксисом. При клике E-Doc откроет его в полноэкранном preview, а текст из `title` покажет подписью под изображением:
-
-```markdown
-![Горизонтальный пример](/examples/media/cat_hor.jpg "Горизонтальное изображение")
-```
-
-**Как отобразится:**
-
-<img src="/storage/edoc/static/examples/media/cat_hor.jpg" alt="Горизонтальный пример" title="Горизонтальное изображение" />
-
-Если изображения должны листаться вместе, объедините их через `gallery` с одинаковым идентификатором. Блоки можно располагать в разных местах страницы:
-
-````markdown
-:::gallery install
-![Шаг 1](/examples/media/dog_hor.jpg "Первый шаг")
-:::
-
-Текст между изображениями.
-
-:::gallery install
-![Шаг 2](/examples/media/jack-russell_ver.jpg "Вертикальный кадр")
-![Шаг 3](/examples/media/animals_ver.jpg "Еще один вертикальный кадр")
-:::
-
-:::gallery after_install
-![Результат](/examples/media/jack-russell_hor.jpg "После установки")
-:::
-````
-
-**Как отобразится:**
-
-<Gallery id="install">
-  <img src="/storage/edoc/static/examples/media/dog_hor.jpg" alt="Шаг 1" title="Первый шаг" />
-</Gallery>
-
-Текст между изображениями.
-
-<Gallery id="install">
-  <img src="/storage/edoc/static/examples/media/jack-russell_ver.jpg" alt="Шаг 2" title="Вертикальный кадр" />
-  <img src="/storage/edoc/static/examples/media/animals_ver.jpg" alt="Шаг 3" title="Еще один вертикальный кадр" />
-</Gallery>
-
-<Gallery id="after_install">
-  <img src="/storage/edoc/static/examples/media/jack-russell_hor.jpg" alt="Результат" title="После установки" />
-</Gallery>
-
-Для видео используйте безопасные `video`-блоки. E-Doc не загружает iframe сразу: сначала показывает кнопку загрузки, чтобы сторонние скрипты видеохостинга не выполнялись при простом открытии страницы. Поддерживаются YouTube, RuTube и VK Video:
-
-````markdown
-:::video youtube
-https://www.youtube.com/watch?v=K4TOrB7at0Y
-title="YouTube-пример"
-:::
-
-:::video rutube
-https://rutube.ru/video/f39214593c1933a60c57de704a5ee8cb/
-title="RuTube-пример"
-:::
-
-:::video vkvideo
-https://vkvideo.ru/video_ext.php?oid=-239594766&id=456239018&hd=3
-title="VK Video-пример"
-:::
-````
-
-Для VK Video берите значение `src` из iframe, который VK показывает в "Поделиться" / "Вставить". Обычная ссылка страницы вида `https://vkvideo.ru/video-239594766_456239018` не является embed-ссылкой и откроется как внешняя ссылка.
-
-**Как отобразится:**
-
-<Video provider="youtube" src="https://www.youtube.com/watch?v=K4TOrB7at0Y" title="YouTube-пример" />
-<Video provider="rutube" src="https://rutube.ru/video/f39214593c1933a60c57de704a5ee8cb/" title="RuTube-пример" />
-<Video provider="vkvideo" src="https://vkvideo.ru/video_ext.php?oid=-239594766&id=456239018&hd=3" title="VK Video-пример" />
 
 ## Code blocks
 

@@ -139,54 +139,6 @@ import { Hero, Section, Grid, Feature } from '@/Components/Mdx'
 </Grid>
 ```
 
-If the home page should be a help center, use `HelpCenter`. By default it lazily loads the static `/docs/search-index.json` index only after search is opened:
-
-> `HelpCenter` and `searchProvider` are available since E-Doc v1.1.0.
-
-```mdx
-import {
-  HelpCenter,
-  HelpFaq,
-  HelpLink,
-  HelpSection,
-} from '@/Components/Mdx'
-
-<HelpCenter
-  title="CHGS WMS"
-  subtitle="How can we help?"
-  searchProvider="static"
-  searchPlaceholder="Search the knowledge base"
->
-  <HelpSection title="Popular tasks" columns={4}>
-    <HelpLink href="/docs/receiving" icon="📦">Receiving</HelpLink>
-    <HelpLink href="/docs/shipping" icon="📤">Shipping</HelpLink>
-    <HelpLink href="/docs/inventory" icon="📋">Inventory</HelpLink>
-    <HelpLink href="/docs/labels" icon="🏷">Print a label</HelpLink>
-  </HelpSection>
-
-  <HelpSection title="By role">
-    <HelpLink href="/docs/roles/employee" icon="👷">Employee</HelpLink>
-    <HelpLink href="/docs/roles/manager" icon="👨‍💼">Manager</HelpLink>
-    <HelpLink href="/docs/roles/admin" icon="🛠">Administrator</HelpLink>
-  </HelpSection>
-
-  <HelpSection title="FAQ" columns={2}>
-    <HelpFaq question="How do I choose a warehouse?" href="/docs/start/warehouse" />
-    <HelpFaq question="How do I reprint a label?" href="/docs/labels/reprint" />
-  </HelpSection>
-</HelpCenter>
-```
-
-For large projects, switch the same component to a backend search provider later:
-
-```mdx
-<HelpCenter
-  title="CHGS WMS"
-  subtitle="How can we help?"
-  searchProvider={{ type: 'api', endpoint: '/api/docs/search' }}
-/>
-```
-
 ## Page with a plugin
 
 An MDX page can import a plugin component:
