@@ -132,6 +132,110 @@ This tells E-Doc:
 - whether to create a generated index page for the directory;
 - whether the section should be collapsed by default.
 
+## Rich intro for `generated-index`
+
+Available since `v1.2.0`.
+
+A section with `link.type = generated-index` can render Markdown or MDX intro content before the automatically generated child page list.
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'docs',
+      type: 'directory',
+      children: [
+        {
+          name: 'client',
+          type: 'directory',
+          children: [
+            { name: 'index.json', type: 'file', description: 'section metadata' },
+            { name: 'index.mdx', type: 'file', description: 'rich intro for the section page' },
+            { name: '01-registration.md', type: 'file' },
+            { name: '02-first-login.md', type: 'file' },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+```json
+{
+  "label": "Client",
+  "description": "Fulfillment client route.",
+  "position": 10,
+  "collapsed": false,
+  "link": { "type": "generated-index" },
+  "content": { "source": "index.mdx" }
+}
+```
+
+If `content.source` is not set, E-Doc tries a sibling `index.md` or `index.mdx`. That file is not registered as a standalone page and does not appear as a separate sidebar item.
+
+After the intro, E-Doc renders the regular generated list of child documents. Links inside intro content, for example `[Registration](./01-registration)`, resolve relative to the section directory. Search and the page table of contents include intro content as well.
+
+## Multiple independent documentation branches
+
+Available since `v1.2.0`.
+
+Large projects can split documentation into several independent top-level branches. For example, application docs and legal docs:
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'docs',
+      type: 'directory',
+      children: [
+        {
+          name: 'app',
+          type: 'directory',
+          children: [
+            { name: 'index.json', type: 'file' },
+            { name: 'owner/01-registration.md', type: 'file' },
+          ],
+        },
+        {
+          name: 'legal',
+          type: 'directory',
+          children: [
+            { name: 'index.json', type: 'file' },
+            { name: 'terms.md', type: 'file' },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+In `docs/app/index.json`, enable a separate sidebar and choose the default branch:
+
+```json
+{
+  "label": "Application docs",
+  "description": "Application user documentation.",
+  "sidebar": true,
+  "default_sidebar": true,
+  "link": { "type": "generated-index" }
+}
+```
+
+In the second branch, enabling a separate sidebar is enough:
+
+```json
+{
+  "label": "Legal docs",
+  "description": "Terms, policies, and agreements.",
+  "sidebar": true,
+  "link": { "type": "generated-index" }
+}
+```
+
+When several independent branches exist, `/docs` redirects to the branch marked with `default_sidebar: true`. If no default is set, E-Doc chooses the first branch by stable sorting.
+
+The left tree and `prev` / `next` are scoped to the active branch: documents from `legal` do not appear in `app` navigation, and vice versa. A footer column with `"source": "docs"` renders these branches as separate links.
+
+Use `sidebar: true` only when top-level sections should really be independent. For a regular shared documentation tree, leave sections without `sidebar: true`.
+
 ## `static`: images and files
 
 `static` is the place for files that pages need:

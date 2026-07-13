@@ -134,6 +134,110 @@ import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
 - нужно ли создать страницу-оглавление раздела;
 - должен ли раздел быть свернут по умолчанию.
 
+## Rich intro для `generated-index`
+
+Доступно с `v1.2.0`.
+
+Раздел с `link.type = generated-index` может выводить вводный Markdown или MDX-контент перед автоматически собранным списком дочерних страниц.
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'docs',
+      type: 'directory',
+      children: [
+        {
+          name: 'client',
+          type: 'directory',
+          children: [
+            { name: 'index.json', type: 'file', description: 'метаданные раздела' },
+            { name: 'index.mdx', type: 'file', description: 'rich intro страницы раздела' },
+            { name: '01-registration.md', type: 'file' },
+            { name: '02-first-login.md', type: 'file' },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+```json
+{
+  "label": "Клиент",
+  "description": "Маршрут клиента фулфилмента.",
+  "position": 10,
+  "collapsed": false,
+  "link": { "type": "generated-index" },
+  "content": { "source": "index.mdx" }
+}
+```
+
+Если `content.source` не указан, E-Doc попробует использовать соседний `index.md` или `index.mdx`. Такой файл не регистрируется как отдельная страница и не появляется отдельным пунктом в sidebar.
+
+После intro E-Doc выводит обычный generated list дочерних документов. Ссылки внутри intro, например `[Регистрация](./01-registration)`, резолвятся относительно каталога раздела. Поиск и оглавление страницы тоже учитывают intro.
+
+## Несколько независимых веток документации
+
+Доступно с `v1.2.0`.
+
+Для больших проектов можно разделить документацию на несколько независимых верхнеуровневых веток. Например, приложение и правовые документы:
+
+<DirectoryTree
+  tree={[
+    {
+      name: 'docs',
+      type: 'directory',
+      children: [
+        {
+          name: 'app',
+          type: 'directory',
+          children: [
+            { name: 'index.json', type: 'file' },
+            { name: 'owner/01-registration.md', type: 'file' },
+          ],
+        },
+        {
+          name: 'legal',
+          type: 'directory',
+          children: [
+            { name: 'index.json', type: 'file' },
+            { name: 'terms.md', type: 'file' },
+          ],
+        },
+      ],
+    },
+  ]}
+/>
+
+В `docs/app/index.json` можно включить отдельный sidebar и выбрать ветку по умолчанию:
+
+```json
+{
+  "label": "Документация приложения",
+  "description": "Пользовательская документация приложения.",
+  "sidebar": true,
+  "default_sidebar": true,
+  "link": { "type": "generated-index" }
+}
+```
+
+Во второй ветке достаточно включить отдельный sidebar:
+
+```json
+{
+  "label": "Правовые документы",
+  "description": "Условия, политики и договоры.",
+  "sidebar": true,
+  "link": { "type": "generated-index" }
+}
+```
+
+Если независимых веток несколько, `/docs` или `/ru/docs` редиректит на ветку с `default_sidebar: true`. Если default не задан, E-Doc выберет первую ветку по стабильной сортировке.
+
+Левое дерево и `prev` / `next` scoped внутри активной ветки: документы из `legal` не появляются в навигации `app`, и наоборот. Footer с `"source": "docs"` выводит такие ветки отдельными ссылками.
+
+Используйте `sidebar: true`, только когда верхнеуровневые разделы действительно должны быть независимыми. Для обычного общего дерева документации оставьте разделы без `sidebar: true`.
+
 ## `static`: изображения и файлы
 
 `static` - место для файлов, которые нужны страницам:

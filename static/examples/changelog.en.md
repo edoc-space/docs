@@ -1,5 +1,30 @@
 # Changelog
 
+## v1.2.0 - 2026-07-13
+
+This release improves large documentation structures: `generated-index` sections can now include rich intro content, and projects with multiple independent branches can choose the default documentation branch for `/docs`.
+
+### Added
+
+- Rich intro content for `generated-index` via `index.md`, `index.mdx`, or explicit `content.source`.
+- Automatic generated lists after intro content without manually maintained links.
+- `sidebar: true` for independent top-level documentation branches.
+- `default_sidebar: true` for redirecting `/docs` to the selected branch.
+- Scoped sidebar and `prev` / `next` navigation inside the active branch.
+- Standalone page container modes via `container`: `fluid`, `constrained`, `wide`, `narrow`.
+
+### Changed
+
+- Markdown links inside intro content now resolve relative to the section directory.
+- Search and table of contents include generated-index intro content.
+- Standalone page breadcrumbs now align to the same container as page content.
+- `container` documentation now explains practical usage and container widths.
+- The infrastructure deploy default now targets the stable `v1.2.0` tag.
+
+### Removed
+
+- Temporary `rich-index` live example and empty test page were removed from user navigation.
+
 ## v1.1.0 - 2026-07-10
 
 This release expands E-Doc from a documentation renderer into a richer documentation workspace: media previews, video embeds, and a Help Center entry point are now available in core components.

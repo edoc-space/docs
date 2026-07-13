@@ -45,12 +45,54 @@ At the beginning of the page, you can provide settings:
 title: About
 description: A short overview of the project and its documentation.
 slug: about
+container: constrained
 nav_label: About
 nav_position: 10
 ---
 ```
 
 This part is called front matter. It is not rendered as page text. E-Doc uses it to understand how to name the page and where to show it.
+
+## Page container width
+
+A standalone page can choose its container mode with `container`:
+
+```yaml
+container: constrained
+```
+
+Available values:
+
+- `fluid` - the container takes the available page width. Use it for home pages, help centers, tables, grids, dashboards, and pages with wide MDX components.
+- `constrained` - the standard constrained container up to `1080px`. This is a good default for regular pages with text, several blocks, and moderately wide components.
+- `wide` - a wider container up to `1280px`. Use it when cards, comparison tables, OpenAPI blocks, or larger examples need more room without stretching across the whole viewport.
+- `narrow` - a narrow container up to `760px`. Use it for text-heavy pages, notes, legal text, and changelogs where comfortable line length matters most.
+
+Breadcrumbs use the same container as the page content, so their left edge aligns with the document start.
+
+On small screens, the modes look almost the same: the container still fills the available width with inner padding. The difference is visible on desktop and wide monitors.
+
+Text page example:
+
+```markdown
+---
+title: About
+slug: about
+container: narrow
+nav_label: About
+---
+```
+
+Wide component page example:
+
+```markdown
+---
+title: API
+slug: api
+container: wide
+nav_label: API
+---
+```
 
 ## Create a simple page
 
@@ -67,6 +109,7 @@ Content:
 title: About
 description: What this project is and where to find documentation.
 slug: about
+container: constrained
 nav_label: About
 nav_position: 10
 ---
@@ -152,7 +195,7 @@ import {
 } from '@/Components/Mdx'
 
 <HelpCenter
-  title="CHGS WMS"
+  title="Knowledge Base"
   subtitle="How can we help?"
   searchProvider="static"
   searchPlaceholder="Search the knowledge base"
@@ -181,7 +224,7 @@ For large projects, switch the same component to a backend search provider later
 
 ```mdx
 <HelpCenter
-  title="CHGS WMS"
+  title="Knowledge Base"
   subtitle="How can we help?"
   searchProvider={{ type: 'api', endpoint: '/api/docs/search' }}
 />
