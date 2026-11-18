@@ -5,6 +5,7 @@ sidebar_label: Markdown и MDX
 sidebar_position: 4
 ---
 
+import { ComponentExample } from '../../../components/ComponentExample.tsx'
 import { Gallery, Section, Video } from '@/Components/Mdx'
 import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
 import { OpenApi } from '@edoc-space/plugin-openapi'
@@ -408,3 +409,45 @@ docs/start/quick-start.mdx -> /ru/docs/start/quick-start
 ## Следующий шаг
 
 Когда вы поняли разницу между Markdown и MDX, можно переходить к [плагинам](/ru/docs/plugins/overview): они добавляют готовые React-компоненты для OpenAPI, changelog и других сложных блоков.
+
+## Публикации блога
+
+Блог использует отдельную opt-in коллекцию `{locale}/blog/`. Для MDX действуют общий runtime и приватный граф статьи: imports из sidecar или `_shared`, без копии React и без попадания черновиков в public build. Новое тело MDX/зависимость и закрытые вложения требуют production-сборки; только date/draft меняют видимость без неё. Подробный пример и граница намеренно публичного static — в [статье о блоге](blog).
+
+## Собственный React-компонент
+
+Компонент сайта хранится в `components/` рядом с `site.json`. Относительный ESM import работает в pages, docs и статьях блога. Компоненты этой папки намеренно публичные: не храните в них закрытый текст, данные или ключи. Помощники только одной статьи остаются в её sidecar или `blog/_shared/`.
+
+```tsx
+// components/ComponentExample.tsx
+import React, { useContext, useState } from 'react';
+import { MdxLayoutContext } from '@edoc/mdx';
+import './component-example.css';
+
+export function ComponentExample({ label = 'Count' }) {
+  const [count, setCount] = useState(0);
+  const { locale } = useContext(MdxLayoutContext);
+  return <button onClick={() => setCount(value => value + 1)}>
+    {locale?.code} · {label}: {count}
+  </button>;
+}
+```
+
+В этом документе импорт идёт из `../../../components/ComponentExample.tsx`; для `{locale}/pages/index.mdx` используйте `../../components/ComponentExample.tsx`. `@edoc/mdx` предоставляет общие блоки и контекст одного React runtime. Два экземпляра ниже независимы и получают текущую локаль:
+
+<ComponentExample label="Первый" />
+<ComponentExample label="Второй" />
+
+![Локальный React-компонент в стандартной теме: независимые экземпляры и текущая локаль](/storage/edoc/static/examples/composition/local-component-ru.png)
+
+
+Стили импортируются из компонента и попадают в production output. После изменения TSX/JSX, CSS, assets или установленного пакета пересоберите соответствующий сайт: `yarn build` в подготовленной среде. Fingerprint проверяет использованные исходники и метаданные пакетов; устаревшая сборка закрывается диагностикой `theme.stale`/`blog.stale`. Изменение только даты или draft статьи не требует сборки.
+
+Установленный пакет подключается по имени, как `@edoc-space/plugin-directory-tree` выше. Он заранее установлен из `local/plugins/package.json`, экспортирует совместимый React-компонент, объявляет React в peer dependencies и не включает собственную копию React. Автоматическая установка при HTTP-запросе отсутствует. Стиль из `exports["./style.css"]` подхватывается штатным resolver. Сбой разрешения модуля, отсутствующий экспорт, недопустимый deep import или вход другой статьи останавливает подготовку с указанием причины. Публичные pages/docs по-прежнему не могут импортировать `blog/`, включая транзитивные импорты.
+
+
+## Ссылки-карточки и геометрия блоков
+
+`linkPlacement="card"` делает всю карточку нативной ссылкой. Внутри допустимы текст, изображение и метаданные; независимые ссылки и кнопки используйте с `linkPlacement="title"` или `"action"`. Подробности — [страницы сайта](site-pages).
+
+MDX-вкладки сохраняют Arrow/Home/End, выбранную вкладку и независимое состояние экземпляров. Навигация примыкает к содержимому без лишнего промежутка; внутренняя панель не скругляется. Видеоблок центрируется в доступной ширине и сохраняет явную кнопку загрузки.

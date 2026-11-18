@@ -226,7 +226,7 @@ Check:
 
 - the package is installed in `local/plugins`;
 - the package name matches the import;
-- Vite dev server was restarted after installation;
+- a production build of this site was made after installation;
 - the dependency is in `dependencies` in `local/plugins/package.json`, not only in `devDependencies`.
 
 ### Component renders but data does not load
@@ -240,3 +240,13 @@ Check the file path. User files usually use the public prefix:
 ## Next step
 
 Review concrete external plugins: [OpenAPI plugin](/docs/plugins/openapi), [Changelog plugin](/docs/plugins/changelog), and [DirectoryTree plugin](/docs/plugins/directory-tree). If you need a custom component, start with core components and move to an external plugin only when the task becomes repeatable.
+
+## Blog components
+
+The [blog](../content/blog) is a built-in opt-in domain, not an npm plugin. Its MDX never joins the public pages/docs glob. Article-only helpers belong in sidecars or `blog/_shared/`; intentionally public local components belong in the site’s `components/`. Shared engine exports use `@edoc/mdx`; installed packages declared in `local/plugins/package.json` use the same resolver and React runtime in both build stages. Undeclared packages and unsupported runtime deep imports fail preparation. Public plugin entries must not contain private text or assets. Changed helpers, CSS and media require a site build.
+
+## Local components and package styles
+
+A one-site composition can remain a [local TSX/JSX component](../content/markdown-and-mdx#your-own-react-component); a separate plugin is optional. A reusable package declares compatible React peers and exposes its component through `exports`. Export `./style.css` to load its stylesheet with the component. Do not bundle React or import a private article from a public package. Package sources, exports metadata, CSS and imported assets participate in the build fingerprint. Install or update dependencies in the configured runtime image and lockfile before rebuilding; the server never installs code on request.
+
+![Local React component in the default theme: independent instances and the current locale](/storage/edoc/static/examples/composition/local-component-en.png)

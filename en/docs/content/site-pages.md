@@ -281,3 +281,62 @@ Check:
 ## Next step
 
 After standalone pages, move to project documentation: sections, directories, and `index.json`.
+
+## Presentation and themes
+
+A [site theme](themes.md), selected in the root `site.json`, controls the shell and page views. Front matter `layout` remains metadata and cannot import arbitrary components. The `container` value is passed in typed props: default supports four sizes, while custom themes choose their layout. Rebuild that site's production assets after changing its theme. Content and URLs remain independent of presentation.
+
+
+## Cards, filters and local composition
+
+The shared `Card` accepts `metadata`, `media`, `actions`, `headingLevel` and `linkPlacement`: `title`, `action`, `card`. A title link and additional actions are siblings, so buttons are never nested in a link. Media is optional. `Grid`/`Columns` only own layout.
+
+```mdx
+<Card title="Public example" href="/projects/example" linkPlacement="title"
+  metadata={<span>Building</span>} actions={<a href="/about#contacts">Contact</a>}>
+  <p>A project or article description.</p>
+</Card>
+```
+
+Store local React components in `components/` next to the root `site.json`, then import them from `en/pages/projects.mdx` using `../../components/Projects.tsx`. Shared blocks are exported by `@edoc/mdx`, retaining the same React context and UI-kit. A small public data array belongs to the site; there is no core Projects API. Project statuses are independent of blog draft/date policy.
+
+`Filters` receives `options`, `value` and `onChange` from its owner. Local instances keep independent state. In `mode="navigation"`, options carry real server URLs, preserving blog filtering, pagination and browser history. See the [block catalog](block-catalog.mdx).
+
+Opt into fresh articles with frontmatter `latest_articles: {limit: 3}` and `<LatestArticles />` in MDX. The page selects its locale and uses `date DESC, slug ASC`; disabled and empty states are distinct. New requests see publication edits without rebuilding; private MDX bodies are not imported. RSS is a link to `/blog/rss.xml` with the locale prefix, without an email form. A View all link beside the collection heading opens the current locale’s blog; it remains available for an enabled empty blog and is omitted when disabled. See [content model](content-model.mdx) and [RSS](rss.md).
+
+
+A home page fragment with a fresh article selection in default, a production build using synthetic data:
+
+![Article selection on the home page](/storage/edoc/static/examples/composition/default-home-desktop.png)
+
+
+### A whole-card link
+
+Set `linkPlacement="card"` with a required `href` for an entrance to a section. This is a native link: Enter, new tabs and the context menu work normally, and its heading supplies the accessible name. Use noninteractive content inside it: no links, buttons, inputs or `actions`. Keep `title` or `action` for independent sibling actions.
+
+```mdx
+<Card title="Blog" href="/blog" linkPlacement="card" label="Read the blog →">
+  <p>Articles and notes.</p>
+</Card>
+```
+
+Media fills the card header and images use `object-fit: cover`. `--markdown-card-padding` controls body spacing; metadata stays separated from the image. `TagList` uses the UI-kit’s `md` Badge size, matching status badges; choose the same UI-kit size for consistent labels.
+
+
+Tabs in the default theme’s synthetic catalogue at 390 px:
+
+![Tabs](/storage/edoc/static/examples/composition/default-tabs-mobile.png)
+
+
+Categories and lifecycle stages belong to the site's data. Shared `Filters` can display categories or confirmed statuses, without assigning a stage to a project. Add personal contact actions only when the owner provides real details; a demonstration does not need to become personal site content.
+
+
+A native entrance card in the default theme with synthetic data:
+
+![Card links](/storage/edoc/static/examples/composition/default-card-links.png)
+
+Blog and `LatestArticles` use the same `ArticleCard` and `Card` with `linkPlacement="card"`. Date, tags, description, image and empty space belong to one link named by its heading. The shared article media header uses `contain` to preserve the full photo/poster; cards without an image omit it. See the [private preview contract](blog#private-card-preview).
+
+Whole article cards in the default theme at 390 px: an image and a text-only entry using synthetic data.
+
+![Article cards, 390 px](/storage/edoc/static/examples/composition/default-article-cards-mobile.png)

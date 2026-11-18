@@ -354,3 +354,29 @@ If the task is about content, start in `local/storage/edoc`. If it is about plug
 ## Next step
 
 Next, review [site pages](/docs/content/site-pages): how `.md` differs from `.mdx`, and how `slug`, `nav_label`, and `nav_position` work.
+
+## Site theme
+
+A `theme/` directory next to the root `site.json` keeps private design separate from engine code and articles. Root `theme.id` selects a built-in, local or installed package through [contract v1](themes). Localized settings and front matter do not select a bundle. Build each site separately and keep private design screenshots out of public `static`.
+
+## Latest articles on pages
+
+A regular page receives a collection only after an explicit frontmatter opt-in:
+
+```yaml
+latest_articles:
+  limit: 3
+```
+
+`limit` is an integer from 1 to 50, defaulting to 3. The source uses the current page locale and fixed `date DESC, slug ASC` ordering shared with the blog. The server supplies `latestArticles: { enabled, items }`: public summaries with `slug`, `title`, `description`, `date`, `tags`, `image`, `preview`, `href`, `format`, `timezone`. It excludes bodies, source paths and private build descriptors. Without opt-in the prop is absent; a disabled blog returns `enabled=false, items=[]`, and an empty locale returns `enabled=true, items=[]`.
+
+`<LatestArticles />` keeps its h2 heading and places a separate View all link beside it, pointing to `/blog` with the current page’s `locale.url_prefix`. The link remains available in an enabled empty locale and is omitted when the blog is disabled. It is a native link with keyboard focus, new-tab support and a touch target. List page size is configured separately with `blog.page_size`; it does not change `latest_articles.limit`.
+
+Date/draft changes apply on the next request without rebuild, cron or cache clearing. Opt-in page responses use `Cache-Control: no-store`. MDX body/dependency edits still require a production build. The source does not import the private blog graph into the page. Themes and local React compositions own card presentation and empty states only.
+
+
+A home page fragment with a fresh article selection in default, a production build using synthetic data:
+
+![Article selection on the home page](/storage/edoc/static/examples/composition/default-home-desktop.png)
+
+Lists and latest articles share one `ArticleCard` with a whole native link. Private `preview` is a guarded URL or `null`, never a source path; the [preview contract](blog#private-card-preview) preserves public `image` and RSS.

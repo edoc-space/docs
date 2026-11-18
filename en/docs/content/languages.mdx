@@ -194,3 +194,20 @@ To add a Russian version of a document:
 4. Check the page at `/ru/docs/...`.
 
 If the translation exists, E-Doc adds it to `hreflang` and the language switcher. If it does not exist, another language page is not substituted automatically.
+
+## Blog locales
+
+The enabled [blog](blog) reads `{locale}/blog/` independently of pages/docs and uses the same locale URL prefix. Slugs are unique per locale. `translation_key` connects existing public translations; drafts and future translations are excluded from initial head alternates. Root site.json selects the IANA `timezone`, default UTC, independently of language and host.
+
+Tags, year archives, counts and pagination use only public records in the selected locale. For example, `/en/blog/tags/php?year=2026&page=2` exists only when EN has enough articles. Missing selections/pages have no `hreflang`; EN contains available translations and EN-only articles without RU fallback. Archive years use the site timezone. Language navigation uses an existing public counterpart; otherwise the language menu uses the configured locale destination.
+
+## RSS and public collection locales
+
+RSS follows each locale’s `url_prefix`: `/blog/rss.xml` for the unprefixed locale and `/en/blog/rss.xml` for EN with `/en`. Channel `language` and absolute item links belong to the requested locale; hidden translations are excluded. RSS links in blog UI and the initial head use that same locale regardless of tag/year selection.
+
+A page’s `latest_articles` source uses its current locale, never substitutes another language, and returns an honest empty collection. See [RSS](rss) and [content model](content-model#latest-articles-on-pages).
+
+
+RSS link in the default theme using 13 synthetic Russian articles (production, mobile 390 × 520):
+
+![Default blog and RSS link](/storage/edoc/static/examples/composition/default-blog-rss-mobile.png)
