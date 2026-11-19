@@ -1,0 +1,19 @@
+.component-example {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border, currentColor);
+  border-radius: .75rem;
+}
+.component-example button {
+  padding: .5rem .75rem;
+  border: 1px solid currentColor;
+  border-radius: .5rem;
+  color: inherit;
+  background: transparent;
+}
+.component-example button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}

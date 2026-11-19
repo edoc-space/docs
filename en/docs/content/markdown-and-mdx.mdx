@@ -5,6 +5,7 @@ sidebar_label: Markdown and MDX
 sidebar_position: 4
 ---
 
+import { ComponentExample } from '../../../components/ComponentExample.tsx'
 import { Gallery, Section, Video } from '@/Components/Mdx'
 import { DirectoryTree } from '@edoc-space/plugin-directory-tree'
 import { OpenApi } from '@edoc-space/plugin-openapi'
@@ -408,3 +409,45 @@ That makes it safe to start with simple Markdown and make the page richer only w
 ## Next step
 
 Once you understand the difference between Markdown and MDX, move to [plugins](/docs/plugins/overview): they add ready React components for OpenAPI, changelog, and other complex blocks.
+
+## Blog publishing
+
+The [opt-in blog](blog) reads a separate `{locale}/blog/` collection. MDX uses one application runtime and a private per-article graph, with helpers in its sidecar or `_shared`. Drafts never enter the public build. A new MDX body/dependency or private attachment requires production preparation; date/draft alone change visibility without rebuilding. Intentionally public static files remain public.
+
+## Your own React component
+
+Place shared author components in `components/` beside `site.json`. Relative ESM imports work in pages, docs and blog articles. This directory is intentionally public: keep private text, data and credentials out of it. Article-only helpers remain in its sidecar or `blog/_shared/`.
+
+```tsx
+// components/ComponentExample.tsx
+import React, { useContext, useState } from 'react';
+import { MdxLayoutContext } from '@edoc/mdx';
+import './component-example.css';
+
+export function ComponentExample({ label = 'Count' }) {
+  const [count, setCount] = useState(0);
+  const { locale } = useContext(MdxLayoutContext);
+  return <button onClick={() => setCount(value => value + 1)}>
+    {locale?.code} · {label}: {count}
+  </button>;
+}
+```
+
+This document imports `../../../components/ComponentExample.tsx`; use `../../components/ComponentExample.tsx` from `{locale}/pages/index.mdx`. `@edoc/mdx` exposes shared blocks and context from one React runtime. These two instances own independent state and receive the current locale:
+
+<ComponentExample label="First" />
+<ComponentExample label="Second" />
+
+![Local React component in the default theme: independent instances and the current locale](/storage/edoc/static/examples/composition/local-component-en.png)
+
+
+Component CSS joins the production output. After changing TSX/JSX, CSS, assets or an installed package, rebuild that site with `yarn build` in its prepared environment. The fingerprint tracks consumed sources and package metadata; stale builds fail closed with `theme.stale`/`blog.stale`. Date/draft-only edits do not require a build.
+
+Import an installed package by name, as with `@edoc-space/plugin-directory-tree` above. Install it beforehand through `local/plugins/package.json`; it must export a compatible React component, declare React peer dependencies and avoid bundling its own React. HTTP requests never install packages. The resolver includes a stylesheet exported as `./style.css`. Missing modules/exports, unsupported runtime deep imports and another article's inputs stop preparation with a diagnostic. Public pages/docs still cannot import `blog/`, including through a transitive helper.
+
+
+## Card links and block geometry
+
+`linkPlacement="card"` makes the entire card a native link. Its content can include text, images and metadata; use `linkPlacement="title"` or `"action"` for independent links and buttons. See [site pages](site-pages).
+
+MDX tabs retain Arrow/Home/End navigation, selection and independent instance state. Navigation joins the content without an extra gap; the inner panel has square corners. Video is centered in the available width and retains an explicit load button.

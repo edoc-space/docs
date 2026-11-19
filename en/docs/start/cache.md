@@ -64,3 +64,9 @@ docker compose run --rm php-cli php psb cache:prune \
 - permanent cache entries older than `--max-age-days`, only when this option is passed.
 
 It does not call `cache:clear`, so valid fresh cache remains in place.
+
+## Blog policy and persistent outputs
+
+The [blog](../content/blog) caches parsed metadata by full content digest, site, locale and configuration. A fresh request policy evaluates date/draft against the current clock. Publication or revocation needs no prune or restart. Blog HTML/JSON and protected files use `no-store`; conditional requests cannot return a hidden article through 304. Already downloaded bytes cannot be revoked.
+
+`local/build/blog/` contains persistent private build artifacts, separate from metadata cache. Clearing `local/cache` must preserve them. Keep active manifests and private graphs with their matching public build for each site; provide no nginx alias or public CDN cache. New MDX bodies/dependencies or private Markdown attachments require a build. `static/` remains intentionally public.

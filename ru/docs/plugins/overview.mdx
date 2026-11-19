@@ -68,7 +68,7 @@ yarn add @edoc-space/plugin-openapi
 npm install @edoc-space/plugin-openapi
 ```
 
-После установки перезапустите Vite dev server, если он уже был запущен.
+После установки выполните production-сборку сайта в подготовленной среде.
 
 ## Использование внешнего плагина в MDX
 
@@ -226,7 +226,7 @@ yarn add @edoc-space/plugin-openapi
 
 - пакет установлен в `local/plugins`;
 - имя package совпадает с импортом;
-- Vite dev server перезапущен после установки;
+- выполнена production-сборка сайта после установки;
 - в `local/plugins/package.json` зависимость находится в `dependencies`, а не только в `devDependencies`.
 
 ### Компонент есть, но данные не загрузились
@@ -240,3 +240,15 @@ yarn add @edoc-space/plugin-openapi
 ## Следующий шаг
 
 Посмотрите конкретные внешние плагины: [OpenAPI plugin](/ru/docs/plugins/openapi), [Changelog plugin](/ru/docs/plugins/changelog) и [DirectoryTree plugin](/ru/docs/plugins/directory-tree). Если нужен свой компонент, начните с core-компонентов и переходите к внешнему плагину только когда появится повторяемая задача.
+
+## Компоненты в блоге
+
+[Блог](../content/blog) — встроенный opt-in домен, а не npm-плагин. Его MDX не включается в публичный glob pages/docs. Авторский приватный helper хранится в sidecar статьи или `blog/_shared/`; общий разрешённый набор экспортируется через `@edoc/mdx`. Необъявленный npm-пакет или неподдерживаемый runtime deep import закрытого графа блокируется: публичный plugin entry нельзя использовать для скрытого текста или ресурсов. Изменение приватного helper/CSS/media требует сборки сайта.
+
+## Локальные компоненты и стили пакета
+
+Композиция одного сайта может оставаться [локальным TSX/JSX-компонентом](../content/markdown-and-mdx#собственный-react-компонент); отдельный плагин не обязателен. Общие компоненты сайта лежат в `components/`, помощники статьи — в sidecar или `blog/_shared/`. Установленные пакеты из `local/plugins/package.json` подключаются одинаковым resolver в публичную и приватную стадии сборки. `@edoc/mdx` предоставляет общий набор и контекст.
+
+Пакет объявляет совместимые React peer dependencies и компонент через `exports`; `./style.css` подключает его стили. Не включайте React в собственный bundle и не импортируйте закрытую статью из публичного пакета. Исходники, exports metadata, CSS и assets участвуют в fingerprint. Для установки/обновления зависимостей подготовьте закреплённый образ среды и lockfile, затем соберите сайт; сервер не устанавливает код по запросу. Необъявленные пакеты и неподдерживаемые runtime deep imports закрытого графа останавливают сборку.
+
+![Локальный React-компонент в стандартной теме: независимые экземпляры и текущая локаль](/storage/edoc/static/examples/composition/local-component-ru.png)
