@@ -67,6 +67,38 @@ Missing slots fall back to the default implementation:
 
 Preserve `afterNav`, `mobileControls` and locale props in a replacement header: documentation uses them for search, versions and mobile navigation. Blog slots will arrive with the blog module; this iteration adds no blog routes.
 
+## Placing search, version and language controls
+
+Use the built-in controls independently in your `Documentation` template. This example places them beside the navigation tree in a sidebar:
+
+```tsx
+import { DocsSearch, DocsVersionDropdown, LanguageSwitcher, mergeLocaleAlternates } from '@/Themes/api';
+import type { DocumentationProps } from '@/Themes/api';
+
+function SidebarControls({ documentation, web, meta }: DocumentationProps) {
+  const ui = web?.ui ?? {};
+  const locales = mergeLocaleAlternates(web?.locales, meta?.alternates);
+
+  return (
+    <>
+      {documentation.search.length > 0 && (
+        <DocsSearch
+          provider={{ type: 'memory', entries: documentation.search }}
+          textLocale={web?.locale?.code ?? 'ru'}
+          ui={ui}
+        />
+      )}
+      <DocsVersionDropdown versions={documentation.versions} ui={ui} align="left" />
+      <LanguageSwitcher locales={locales} ui={ui} align="left" />
+    </>
+  );
+}
+```
+
+Each control can be moved to a different part of the template. On a regular page, the language switcher uses the same `web.locales` and `meta.alternates` data. The language switcher is hidden when only one language is configured. The version switcher is hidden when versions are disabled.
+
+Leave enough room for the dropdown menus and keep the controls reachable on narrow screens. When CSS changes their placement, account for keyboard focus order. Search registers Ctrl/Cmd+K for the entire page. Render a single instance and reuse it at different viewport widths.
+
 ## CSS and accessibility
 
 CSS order is ReactSoftBox foundations → common content/layout styles → default tokens → selected theme CSS. Import theme CSS from the entry. Override variables such as `--color-body-bg`, `--color-text`, `--color-muted`, `--color-line`, `--font-sans`, `--font-mono` and `--surface-card`. Use `:root, :root[data-theme="light"]` to override default tokens.
