@@ -89,6 +89,38 @@ export default {
 
 Точки блога будут добавлены вместе с модулем блога; эта версия не добавляет blog routes или публикации.
 
+## Независимое размещение поиска, версии и языка
+
+В своём шаблоне `Documentation` используйте штатные элементы отдельно. Например, добавьте следующий блок в боковую панель рядом с деревом разделов:
+
+```tsx
+import { DocsSearch, DocsVersionDropdown, LanguageSwitcher, mergeLocaleAlternates } from '@/Themes/api';
+import type { DocumentationProps } from '@/Themes/api';
+
+function SidebarControls({ documentation, web, meta }: DocumentationProps) {
+  const ui = web?.ui ?? {};
+  const locales = mergeLocaleAlternates(web?.locales, meta?.alternates);
+
+  return (
+    <>
+      {documentation.search.length > 0 && (
+        <DocsSearch
+          provider={{ type: 'memory', entries: documentation.search }}
+          textLocale={web?.locale?.code ?? 'ru'}
+          ui={ui}
+        />
+      )}
+      <DocsVersionDropdown versions={documentation.versions} ui={ui} align="left" />
+      <LanguageSwitcher locales={locales} ui={ui} align="left" />
+    </>
+  );
+}
+```
+
+Каждый элемент можно перенести в другую часть шаблона. Для обычной страницы выбор языка использует те же `web.locales` и `meta.alternates`. Если у страницы один язык или у документации отключены версии, соответствующий переключатель скрывается.
+
+При собственной компоновке оставьте достаточно места для выпадающих списков и доступ к элементам на узком экране. Если меняете расположение через CSS, учитывайте порядок фокуса. Поиск регистрирует сочетание Ctrl/Cmd+K на всю страницу, поэтому выводите один экземпляр и переиспользуйте его при смене ширины экрана.
+
 ## Слои CSS
 
 Порядок: foundations ReactSoftBox → общие content/layout styles → tokens стандартной темы → CSS выбранной темы. В `theme.css` можно переопределить CSS variables, например `--color-body-bg`, `--color-text`, `--color-muted`, `--color-line`, `--font-sans`, `--font-mono`, `--surface-card`. Используйте `:root, :root[data-theme="light"]`, если заменяете стандартные tokens.
